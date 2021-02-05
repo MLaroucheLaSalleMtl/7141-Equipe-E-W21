@@ -70,20 +70,9 @@ public class Locomotion : MonoBehaviour
         capman.Move(move);
 
 
-        if (jump)
-        {
-            move.y += jumpPower * Time.deltaTime * speed;
-        }
-
-        //if (IsMoving)
+        //if (jump)
         //{
-        //    //animator.SetBool("IsIdle", false);
-        //    animator.SetBool("IsRunning", true); //la booléene isRunning s'active                   
-        //}
-        //else if (!IsMoving)
-        //{
-        //    animator.SetBool("IsRunning", false);
-        //    //animator.SetBool("IsIdle", true);
+        //    move.y += jumpPower * Time.deltaTime * speed;
         //}
 
 

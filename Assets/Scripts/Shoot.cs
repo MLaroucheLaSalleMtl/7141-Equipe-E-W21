@@ -22,7 +22,7 @@ public class Shoot : MonoBehaviour
         if (isFiring)
         {
             isFiring = false;
-            GameObject fireBall = Instantiate(projectile, transform.position, transform.rotation);
+            GameObject fireBall = Instantiate(projectile, transform.position + (transform.forward * 2f), transform.rotation);
             fireBall.GetComponent<Rigidbody>().AddForce(transform.forward * firePower, ForceMode.Impulse);
         }
     }
