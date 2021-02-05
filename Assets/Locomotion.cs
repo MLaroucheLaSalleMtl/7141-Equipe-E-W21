@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 public class Locomotion : MonoBehaviour
 {
-    [SerializeField] CharacterController policeman;
+    [SerializeField] CharacterController capman;
     private Vector3 move;
     private float hAxis;
     private float vAxis;
@@ -17,11 +17,22 @@ public class Locomotion : MonoBehaviour
     [SerializeField] private bool jump = false;
     private float jumpPower = 50f;
 
+    [SerializeField] private GameObject arenaCenter;
+    private bool isTrigger = false;
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.tag == "Water")
+        {
+            Debug.Log("is in contact with water");
+            isTrigger = true;
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        policeman = GetComponent<CharacterController>();
+        capman = GetComponent<CharacterController>();
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -56,7 +67,7 @@ public class Locomotion : MonoBehaviour
         }
 
         move.y -= gravity * Time.deltaTime * speed;
-        policeman.Move(move);
+        capman.Move(move);
 
 
         if (jump)
@@ -74,6 +85,13 @@ public class Locomotion : MonoBehaviour
         //    animator.SetBool("IsRunning", false);
         //    //animator.SetBool("IsIdle", true);
         //}
+
+
+        if (isTrigger)
+        {
+            capman.transform.position = arenaCenter.transform.position;            
+            isTrigger = false;
+        }
 
     }
 }
