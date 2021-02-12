@@ -5,18 +5,23 @@ using UnityEngine.InputSystem;
 
 public class Locomotion : MonoBehaviour
 {
+    //Déplacmeent du joueur
     [SerializeField] CharacterController capman;
     private Vector3 move;
     private float hAxis;
     private float vAxis;
-    private bool IsMoving = false;
+    //private bool isMoving = false;
 
+    //Gravité
     [SerializeField] private float gravity = 10f;
     private float speed = 10f;
 
-    [SerializeField] private bool jump = false;
-    private float jumpPower = 50f;
+    //Saut du joueur
+    private bool jump = false;
+    [SerializeField]private float jumpPower = 1000f;
 
+
+    //Respawn du joueur
     [SerializeField] private GameObject arenaCenter;
     private bool isTrigger = false;
 
@@ -50,6 +55,8 @@ public class Locomotion : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        //Déplacement du joueur
         move = new Vector3(hAxis / 4, 0f, vAxis / 4);
         float moveAngle = (Mathf.Atan2(move.x, move.z) * Mathf.Rad2Deg); //on calcule l'angle de muouvement et on le convertit en degré et le rendre relatif a langle de la caméra
         float lookAngle = Mathf.LerpAngle(transform.eulerAngles.y, moveAngle, 0.25f); //Progressivement me tourner vers l'angle de déplacement
@@ -59,23 +66,31 @@ public class Locomotion : MonoBehaviour
             transform.rotation = Quaternion.Euler(0, lookAngle, 0); //tourne le transform sur l'axe des y
             Vector3 forward = Vector3.forward * move.magnitude; //trouve le devant du joueur selon son orientation
             move = Quaternion.Euler(0f, moveAngle, 0f) * forward; //transposer la force avec le mouvement de l'angle
-            IsMoving = true;
+            //isMoving = true;
         }
         else
         {
-            IsMoving = false;
+            //isMoving = false;
         }
 
+
+        //Saut du joueur
+        if (jump)
+        {
+            if (capman.isGrounded)
+            {
+                move.y = Mathf.Sqrt(jumpPower * Time.deltaTime * speed);
+                jump = false;
+            }
+        }
+
+
+        //Application de la gravité
         move.y -= gravity * Time.deltaTime * speed;
         capman.Move(move);
 
 
-        //if (jump)
-        //{
-        //    move.y += jumpPower * Time.deltaTime * speed;
-        //}
-
-
+        //Respawn du joueur
         if (isTrigger)
         {
             capman.transform.position = arenaCenter.transform.position;            
