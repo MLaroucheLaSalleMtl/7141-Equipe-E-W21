@@ -13,6 +13,11 @@ public class BallTimer : MonoBehaviour
         once = false;
     }
 
+    /*private void OnCollisionEnter(Collision collision)
+    {
+        Destroy(gameObject);
+    }*/
+
     private void DestroyBall()
     {
         Destroy(gameObject);

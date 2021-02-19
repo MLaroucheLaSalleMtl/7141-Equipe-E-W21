@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 public class Shoot : MonoBehaviour
 {
     [SerializeField] private GameObject projectile;
-    [SerializeField] private float firePower = 20f;
+    [SerializeField] private float firePower = 80f;
     private bool isFiring = false;
 
 
@@ -22,7 +22,7 @@ public class Shoot : MonoBehaviour
         if (isFiring)
         {
             isFiring = false;
-            GameObject fireBall = Instantiate(projectile, transform.position + (transform.forward * 2f), transform.rotation);
+            GameObject fireBall = Instantiate(projectile, transform.position + (transform.forward * 3f), transform.rotation);
             fireBall.GetComponent<Rigidbody>().AddForce(transform.forward * firePower, ForceMode.Impulse);
         }
     }

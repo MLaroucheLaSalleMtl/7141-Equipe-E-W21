@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class ColourOpponent : MonoBehaviour
 {
-    //[SerializeField] private GameObject panelColour = null;
+    [SerializeField] private GameObject panelArena = null;
+    [SerializeField] private GameObject panelColour = null;
     private string[] arrayColour = new string[8];
     private string colourTemp = " ";
     private int colourNumber = 0;
@@ -35,6 +36,11 @@ public class ColourOpponent : MonoBehaviour
             ColourRestart();
         }
     }
+    public void ChangePanel()
+    {
+        panelColour.SetActive(false);
+        panelArena.SetActive(true);
+    }
     /*public string[] ColourExit()
     {
         panelColour.SetActive(false);
@@ -46,6 +52,8 @@ public class ColourOpponent : MonoBehaviour
         ColourCheck();
 
         colourNumber = 0;
+
+        ChangePanel();
     }
     public void ColourBlue()
     {
@@ -55,6 +63,8 @@ public class ColourOpponent : MonoBehaviour
         arrayColour[0] = arrayColour[1];
         arrayColour[1] = colourTemp;
         colourNumber = 1;
+
+        ChangePanel();
     }
     public void ColourYellow()
     {
@@ -64,6 +74,8 @@ public class ColourOpponent : MonoBehaviour
         arrayColour[0] = arrayColour[2];
         arrayColour[2] = colourTemp;
         colourNumber = 2;
+
+        ChangePanel();
     }
     public void ColourGreen()
     {
@@ -73,6 +85,8 @@ public class ColourOpponent : MonoBehaviour
         arrayColour[0] = arrayColour[3];
         arrayColour[3] = colourTemp;
         colourNumber = 3;
+
+        ChangePanel();
     }
     public void ColourOrange()
     {
@@ -82,6 +96,8 @@ public class ColourOpponent : MonoBehaviour
         arrayColour[0] = arrayColour[4];
         arrayColour[4] = colourTemp;
         colourNumber = 4;
+
+        ChangePanel();
     }
     public void ColourPurple()
     {
@@ -91,6 +107,8 @@ public class ColourOpponent : MonoBehaviour
         arrayColour[0] = arrayColour[5];
         arrayColour[5] = colourTemp;
         colourNumber = 5;
+
+        ChangePanel();
     }
     public void ColourLightBlue()
     {
@@ -100,6 +118,8 @@ public class ColourOpponent : MonoBehaviour
         arrayColour[0] = arrayColour[6];
         arrayColour[6] = colourTemp;
         colourNumber = 6;
+
+        ChangePanel();
     }
     public void ColourLightGreen()
     {
@@ -109,6 +129,8 @@ public class ColourOpponent : MonoBehaviour
         arrayColour[0] = arrayColour[7];
         arrayColour[7] = colourTemp;
         colourNumber = 7;
+
+        ChangePanel();
     }
 
     // Update is called once per frame

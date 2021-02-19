@@ -19,13 +19,13 @@ public class ChooseArenaScreen : MonoBehaviour
     public void OnForestClick()
     {
         pnlChooseArena.SetActive(false);
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(1); //Charge la scène indéxée
     }
 
     public void OnRuinsClick()
     {
         pnlChooseArena.SetActive(false);
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene(2); //Charge la scène indéxée
     }
 
     // Start is called before the first frame update

@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2689854717431184022}
   - component: {fileID: 2689854717431184021}
   - component: {fileID: 2689854717431184020}
+  - component: {fileID: -469550604976242049}
   m_Layer: 0
   m_Name: CapMan
   m_TagString: Untagged
@@ -130,9 +131,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9917aa223b54fb04795d193ca0262225, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  policeman: {fileID: 0}
+  capman: {fileID: 0}
   gravity: 10
-  jump: 0
+  jumpPower: 1000
+  arenaCenter: {fileID: 0}
 --- !u!114 &2689854717431184020
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -147,6 +149,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectile: {fileID: 1767055533370603913, guid: 7ab27d76603312749801e3e374d4258d, type: 3}
   firePower: 20
+--- !u!114 &-469550604976242049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2689854717431184027}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c627110639b8ab43bda0901aaf14dd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hp: 200
+  hpMax: 200
+  damage: 50
+  enemyGO: {fileID: 7162662822393016599, guid: a06acf093a6aaa945acf4b4fbfaa5b74, type: 3}
 --- !u!1 &2689854718207232142
 GameObject:
   m_ObjectHideFlags: 0
