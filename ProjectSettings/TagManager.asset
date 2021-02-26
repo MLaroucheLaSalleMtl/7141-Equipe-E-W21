@@ -14,12 +14,12 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - PlayerMap
+  - OpponentMap
+  - MapCamera
+  - Opponent
+  - Player
+  - Ground
   - 
   - 
   - 

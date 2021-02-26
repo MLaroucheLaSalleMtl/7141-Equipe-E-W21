@@ -2,17 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NormalState : IState
+public class RunState : IState
 {
-    private static NormalState instance = null;
+    private static RunState instance;
 
-    private NormalState() { }
+    private RunState() { }
 
-    public static NormalState GetState()
+    public static RunState GetState()
     {
-        if (instance == null) //vérifie l'état actuel du pattern
+        if (instance == null)
         {
-            instance = new NormalState(); //fait une instance du pattern
+            instance = new RunState();
         }
         return instance;
     }
@@ -24,7 +24,7 @@ public class NormalState : IState
 
     public bool GoToBase()
     {
-        return false;
+        return true;
     }
 
     public bool DefendBase()

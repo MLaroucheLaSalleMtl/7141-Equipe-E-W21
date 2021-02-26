@@ -5,6 +5,9 @@ using UnityEngine.AI;
 
 public class AI_Behavior : MonoBehaviour
 {
+    private Enemy enemy;
+    [SerializeField] private Transform startPointPosition;
+    private bool isChasing = true;
 
     [SerializeField] private NavMeshAgent agent; //Mon NavMeshAgent
     [SerializeField] public List<GameObject> targetList = null; //Liste des cibles
@@ -20,6 +23,9 @@ public class AI_Behavior : MonoBehaviour
 
     private IState state; //Référence vers l'interface Istate
 
+    private BaseArea baseArea;
+    [SerializeField] private GameObject playerBase;
+
     void Awake()
     {
 
@@ -31,19 +37,23 @@ public class AI_Behavior : MonoBehaviour
         agent = GetComponent<NavMeshAgent>(); //Cache du navmesh
         pointIndex = Random.Range(0, patrolPoints.Length); //retourne un index alátoire de la liste des points de patrouille
         state = NormalState.GetState(); //référence au state pattern
+        enemy = GetComponent<Enemy>();
+        baseArea = playerBase.GetComponent<BaseArea>();
     }
 
     // Update is called once per frame
     void Update()
     {
         //patrouille
-        Invoke("OnPatrolling", 3f); //Invoque la méthode qui permet au navMesh de faire sa patrouille
 
-        if (this.state.CanAttackEnemy()) //vérifie l'état du pattern actuel
+        if (!this.state.CanAttackEnemy() || !this.state.GoToBase() || !this.state.DefendBase())
+        {
+            Invoke("OnPatrolling", 3f); //Invoque la méthode qui permet au navMesh de faire sa patrouille
+        }
+        else
         {
             CancelInvoke("OnPatrolling"); //Annule l'état de patrouille
         }
-        else { OnPatrolling(); }
 
         foreach (GameObject target in targetList)
         {
@@ -51,34 +61,71 @@ public class AI_Behavior : MonoBehaviour
 
             {
                 Vector3 distanceFromEnemy = agent.transform.position - target.transform.position; //distance entre le joueur et l'IA
-
                 if (distanceFromEnemy.magnitude < 70)
                 {
                     this.state = AttackState.GetState(); //Fait appel au pattern Attack State
-                    transform.LookAt(target.transform.position); //le forward de l'agent fait face à sa cible
-                    agent.destination = target.transform.position; //l'agent s'arrete à sa position actuelle
-
-                    if (distanceFromEnemy.magnitude < 40)
+                    if (this.state.CanAttackEnemy()) //vérfie si l'agent peut attaquer
                     {
-                        agent.destination = agent.transform.position; // l'IA s'arrete à sa position actuelle
+                        transform.LookAt(target.transform.position); //le forward de l'agent fait face à sa cible
+                        agent.destination = target.transform.position; //l'agent s'arrete à sa position actuelle
 
-                        transform.LookAt(target.transform.position);
-
-                        timer += Time.deltaTime;
-                        if (timer > 1f)
+                        if (distanceFromEnemy.magnitude < 40)
                         {
-                            GameObject fireBall = Instantiate(projectile, transform.position + (transform.forward * 3f), transform.rotation); //Fait une instanciation du projectile
-                            fireBall.GetComponent<Rigidbody>().AddForce(transform.forward * firePower, ForceMode.Impulse); //Donne une force et une direction au projectile instacié
-                            timer = 0f;
+                            agent.destination = agent.transform.position; // l'IA s'arrete à sa position actuelle
+
+                            transform.LookAt(target.transform.position);
+
+                            timer += Time.deltaTime;
+                            if (timer > 1f)
+                            {
+                                GameObject fireBall = Instantiate(projectile, transform.position + (transform.forward * 3f), transform.rotation); //Fait une instanciation du projectile
+                                fireBall.GetComponent<Rigidbody>().AddForce(transform.forward * firePower, ForceMode.Impulse); //Donne une force et une direction au projectile instacié
+                                timer = 0f;
+                            }
+                        }
+                    }
+
+                }
+
+                if (enemy.Hp <= (enemy.HpMax / 2))
+                {
+                    this.state = RunState.GetState();
+                    CancelInvoke("OnPatrolling"); //Annule l'état de patrouille
+                    agent.destination = startPointPosition.position;
+                    if (enemy.Hp >= (enemy.HpMax * 0.75))
+                    {
+                        this.state = NormalState.GetState();
+                    }
+                }
+
+                if (baseArea.isBeingCaptured)
+                {
+                    this.state = DefendState.GetState();
+                    CancelInvoke("OnPatrolling"); //Annule l'état de patrouille
+                    Debug.Log(state);
+                    if (this.state.DefendBase())
+                    {
+                        agent.destination = startPointPosition.position;
+                        Vector3 distanceFromStartPoint = agent.transform.position - startPointPosition.position;
+                        if (distanceFromStartPoint.magnitude < 30)
+                        {
+                            this.state = AttackState.GetState();
                         }
                     }
                 }
+                else if (!baseArea.isBeingCaptured)
+                {
+                    this.state = NormalState.GetState(); //fait appel au pattern Normal State
+                }
+
+
                 else
                 {
                     this.state = NormalState.GetState(); //fait appel au pattern Normal State
                 }
             }
         }
+
     }
 
     private void OnPatrolling()

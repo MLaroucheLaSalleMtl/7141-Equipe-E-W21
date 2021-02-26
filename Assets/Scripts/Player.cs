@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class Player : Characters
 {
+    public Player() { }
     public Player(float hp, float damage, float defense) : base(hp, damage, defense) { }
 
     private Enemy enemy;
@@ -15,11 +16,18 @@ public class Player : Characters
     [SerializeField] private GameObject enemyGO = null;
     [SerializeField] private Image healthBar = null;
 
+    private float dmgReceived = 0;
+
     public override void ReceiveDamage()
     {
-        this.Hp -= (enemy.Damage - this.Defense);
+        dmgReceived = enemy.Damage - this.Defense;
+        //Debug.Log("Player Defense " + this.Defense);
+        //Debug.Log("Enemy Damage " + enemy.Damage);
+        //Debug.Log("Player Damage Received " + dmgReceived);
+        this.Hp -= dmgReceived;
         healthBar.fillAmount = this.Hp/200f;
-
+        //Debug.Log(this.Hp);
+        //Debug.Log(healthBar.fillAmount);
         if(this.Hp <= 0f)
         {
             IsDead();
@@ -28,7 +36,7 @@ public class Player : Characters
 
     public override void IsDead()
     {
-        //manager.GameOver();
+        manager.GameOver();
     }
 
     public bool ReturnDead()
@@ -49,7 +57,9 @@ public class Player : Characters
     {
         manager = GameManager.instance;
         enemy = enemyGO.GetComponent<Enemy>();
-        healthBar.fillAmount = 1;
+        healthBar.fillAmount = 1f;
+        //Debug.Log("Player Defense " + this.Defense);
+        //Debug.Log("Enemy Damage " + enemy.Damage);
     }
 
     // Update is called once per frame

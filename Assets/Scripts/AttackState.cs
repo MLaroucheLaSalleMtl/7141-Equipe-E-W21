@@ -21,4 +21,14 @@ public class AttackState : IState
     {
         return true;
     }
+
+    public bool GoToBase()
+    {
+        return false;
+    }
+
+    public bool DefendBase()
+    {
+        return false;
+    }
 }

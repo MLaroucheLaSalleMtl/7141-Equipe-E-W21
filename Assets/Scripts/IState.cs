@@ -5,5 +5,7 @@ using UnityEngine;
 public interface IState
 {
     bool CanAttackEnemy();
+    bool GoToBase();
+    bool DefendBase();
 }
 
