@@ -5,203 +5,165 @@ using UnityEngine.UI;
 
 public class BaseArea : MonoBehaviour
 {
-    [SerializeField] private GameObject character = null;
-    [SerializeField] private GameObject player = null;
-    [SerializeField] private bool baseActive = true;
+    [SerializeField] private GameObject character = null; //GameObject représentant l'occupant de la base
+    [SerializeField] private GameObject player = null; //GameObject représentant le joueur
+    [SerializeField] private bool baseActive = true; //Bool pour désigner si la base est actif ou non
 
-    [SerializeField] private bool isPresentCharacter = false;
-    private bool isPresentPlayer = false;
-    private bool isPresentCapture = false;
+    [SerializeField] private bool isPresentCharacter = false; //Bool pour désigner si l'occupant est présent dans la base
+    private bool isPresentPlayer = false; //Bool pour désigner si le joueur est dans la base
+    private bool isPresentCapture = false; //Bool pour désigner si quelqu'un autres que l'occupant et le joueur est dans la base
 
-    [SerializeField] private GameObject panelBaseCapture = null;
-    [SerializeField] private Image imageFillCaptureProgress = null;
-    [SerializeField] private float floatCaptureProgress = 0;
+    [SerializeField] private GameObject panelBaseCapture = null; //GameObject qui désigne le panel de la capture de base
+    [SerializeField] private Image imageFillCaptureProgress = null; //Image qui désigne la barre de progression de la capture
+    [SerializeField] private float floatCaptureProgress = 0; //float qui désigne la valeur de la capture
 
-    private float timeRegen = 0;
-    private bool once = false;
-    public bool isBeingCaptured = false;
-    [SerializeField] private float baseRegen = 10f;
-    [SerializeField] private float multiplierDamage = 1.2f;
-    [SerializeField] private float multiplierDefense = 1.2f;
+    private float timeRegen = 0; //float qui désigne le temps de régénération
+    public bool isBeingCaptured = false; //bool qui désigne si la base est en cours de capture
+    [SerializeField] private float baseRegen = 10f; //float qui désigne la valeur de régénération dans la base
+    private float baseMultiplierDamage = 1.0f; //float qui désigne le multiplicateur de base du dégât
+    [SerializeField] private float multiplierDamage = 1.2f; //float qui désigne le multiplicateur du dégât
+    private float baseMultiplierDefense = 1.0f; //float qui désigne le multiplicateur de base de défense
+    [SerializeField] private float multiplierDefense = 1.2f; //float qui désigne le multiplicateur de défense
 
     // Start is called before the first frame update
     void Start()
     {
-        baseActive = true;
-        isBeingCaptured = false;
-        panelBaseCapture.SetActive(false);
-        imageFillCaptureProgress.fillAmount = 0;
-        floatCaptureProgress = 0;
+        baseActive = true; //Initialise à true
+        isBeingCaptured = false; //Initialise à false
+        panelBaseCapture.SetActive(false); //Cache le panel de la capture de base
+        imageFillCaptureProgress.fillAmount = 0; //Initialise le fillAmount à 0
+        floatCaptureProgress = 0; //Initialise la valeur à 0
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other) //Méthode pour si un collider entre
     {
-        if (other.gameObject.tag == "Character") 
+        if (other.gameObject.tag == "Character") //Condition If pour voir si le tag du gameObject du collider est "Character"
         {
-            if (baseActive)
+            if (baseActive) //Condition If pour voir si la base est actif
             {
-                if (other.gameObject == character)
+                if (other.gameObject == character) //Condition If pour voir si le gameObject du collider est l'occupant
                 {
-                    isPresentCharacter = true;
-                    Debug.Log("Occupier Enter");
+                    isPresentCharacter = true; //Bool à true
                 }
-                if (other.gameObject != character && other.gameObject == player && character != player)
+                if (other.gameObject != character && other.gameObject == player && character != player) //Condition If pour voir si le gameObject du collider est le joueur et que c'est une base autre que celui du joueur
                 {
-                    panelBaseCapture.SetActive(true);
-                    isPresentPlayer = true;
+                    panelBaseCapture.SetActive(true); //Panel actif dans la scène
+                    isPresentPlayer = true; //Bool à true
                 }
-                if (other.gameObject != character && other.gameObject != player)
+                if (other.gameObject != character && other.gameObject != player) //Condition If pour voir si le gameObject du collider est autre que l'occupant et le joueur
                 {
-                    isPresentCapture = true;
-                }
-            }
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.tag == "Character")
-        {
-            if (other.gameObject == character)
-            {
-                isPresentCharacter = false;
-                Debug.Log("Occupier Left");
-            }
-            if (other.gameObject != character && other.gameObject == player && character != player)
-            {
-                panelBaseCapture.SetActive(false);
-                isPresentPlayer = false;
-            }
-            if (other.gameObject != character && other.gameObject != player)
-            {
-                isPresentCapture = false;
-            }
-        }
-    }
-
-    public void BaseRegen()
-    {
-        if (character != player)
-        {
-            if (character.GetComponent<Enemy>().Hp < character.GetComponent<Enemy>().HpMax)
-            {
-                character.GetComponent<Enemy>().Hp += baseRegen;
-
-                if (character.GetComponent<Enemy>().Hp > character.GetComponent<Enemy>().HpMax)
-                {
-                    character.GetComponent<Enemy>().Hp = character.GetComponent<Enemy>().HpMax;
-                }
-            }
-        }
-        else if (character == player)
-        {
-            if (character.GetComponent<Player>().Hp < character.GetComponent<Player>().HpMax)
-            {
-                character.GetComponent<Player>().Hp += baseRegen;
-
-                if (character.GetComponent<Player>().Hp > character.GetComponent<Player>().HpMax)
-                {
-                    character.GetComponent<Player>().Hp = character.GetComponent<Player>().HpMax;
+                    isPresentCapture = true; //Bool à true
                 }
             }
         }
     }
 
-    public void BaseDamageBenefit()
+    private void OnTriggerExit(Collider other) //Méthode pour si le collider sort
     {
-        if (character != player)
+        if (other.gameObject.tag == "Character") //Condition If pour voir si le tag du gameObject du collider est "Character"
         {
-            character.GetComponent<Enemy>().Damage *= multiplierDamage;
-        }
-        else if (character == player)
-        {
-            character.GetComponent<Player>().Damage *= multiplierDamage;
+            if (other.gameObject == character) //Condition If pour voir si le gameObject du collider est l'occupant
+            {
+                isPresentCharacter = false; //Bool à false
+            }
+            if (other.gameObject != character && other.gameObject == player && character != player) //Condition If pour voir si le gameObject du collider est le joueur et que c'est une base autre que celui du joueur
+            {
+                panelBaseCapture.SetActive(false); //Panel non actif dans la scène
+                isPresentPlayer = false; //Bool à false
+            }
+            if (other.gameObject != character && other.gameObject != player) //Condition If pour voir si le gameObject du collider est autre que l'occupant et le joueur
+            {
+                isPresentCapture = false; //Bool à false
+            }
         }
     }
 
-    public void BaseDefenseBenefit()
+    public void BaseRegen() //Méthode pour régénérer la vie 
     {
-        if (character != player)
+        if (character != player) //Condition If pour si l'occupant n'est pas le joueur
         {
-            character.GetComponent<Enemy>().Defense *= multiplierDefense;
+            if (character.GetComponent<Enemy>().Hp < character.GetComponent<Enemy>().HpMax) //Condition If pour si le HP de l'occupant est inférieur à son HpMax
+            {
+                character.GetComponent<Enemy>().Hp += baseRegen; //Augmente la vie de l'occupant par le baseRegen
+
+                if (character.GetComponent<Enemy>().Hp > character.GetComponent<Enemy>().HpMax) //Condition If pour si le Hp de l'occupant est supérieur à son HpMax
+                {
+                    character.GetComponent<Enemy>().Hp = character.GetComponent<Enemy>().HpMax; //Mettre son Hp au HpMax.
+                }
+            }
         }
-        else if (character == player)
+        else if (character == player) //Condition If pour si l'occupant est celui du joueur
         {
-            character.GetComponent<Player>().Defense *= multiplierDefense;
+            if (character.GetComponent<Player>().Hp < character.GetComponent<Player>().HpMax) //Condition If pour si le HP de l'occupant est inférieur à son HpMax
+            {
+                character.GetComponent<Player>().Hp += baseRegen; //Augmente la vie de l'occupant par le baseRegen
+
+                if (character.GetComponent<Player>().Hp > character.GetComponent<Player>().HpMax) //Condition If pour si le Hp de l'occupant est supérieur à son HpMax
+                {
+                    character.GetComponent<Player>().Hp = character.GetComponent<Player>().HpMax; //Mettre son Hp au HpMax.
+                }
+            }
         }
     }
 
-    public void BaseDamageReturn()
+    public float BaseDamageBenefit() //Méthode pour envoyer le multiplicateur de dégâts
     {
-        if (character != player)
+        if (baseActive) //Condition If pour si la base est actif 
         {
-            character.GetComponent<Enemy>().Damage = character.GetComponent<Enemy>().DamageBase;
-        }
-        else if (character == player)
+            return multiplierDamage; //Retourne le multiplicateur de dégâts
+        } 
+        else //Si la base est inactif
         {
-            character.GetComponent<Player>().Damage = character.GetComponent<Player>().DamageBase;
+            return baseMultiplierDamage; //Retourne le multiplicateur de base de dégâts
         }
     }
 
-    public void BaseDefenseReturn()
+    public float BaseDefenseBenefit() //Méthode pour envoyer le multiplicateur de défense
     {
-        if (character != player)
+        if (baseActive) //Condition If pour si la base est actif 
         {
-            character.GetComponent<Enemy>().Defense = character.GetComponent<Enemy>().DefenseBase;
+            return multiplierDefense; //Retourne le multiplicateur de défense
         }
-        else if (character == player)
+        else //Si la base est inactif
         {
-            character.GetComponent<Player>().Defense = character.GetComponent<Player>().DefenseBase;
+            return baseMultiplierDefense; //Retourne le multiplicateur de base de défense
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (baseActive && isPresentCharacter)
+        if (baseActive && isPresentCharacter) //Si la base est actif et l'occupant est dans sa base
         {
-            if (character != null)
+            if (character != null) //Si l'occupant n'est pas détruit
             {
-                timeRegen += Time.deltaTime;
-                if (timeRegen >= 0.5f)
+                timeRegen += Time.deltaTime; //Augment le timeRegen par le temps du jeu
+                if (timeRegen >= 0.5f) //Si le timeRegen est supérieur ou égal à 0.5 secondes.
                 {
-                    timeRegen = 0f;
-                    BaseRegen();
+                    timeRegen = 0f; //Remet le timeRegen à 0
+                    BaseRegen(); //Aller à la méthode BaseRegen() pour régénérer sa vie.
                 }
             }
         }
 
-        if (baseActive && imageFillCaptureProgress && isPresentPlayer && !isPresentCharacter)
+        if (baseActive && imageFillCaptureProgress && isPresentPlayer && !isPresentCharacter) //Si la base est actif, il y a un image pour la progression, le joueur est présent et l'occupant est absent
         {
-            imageFillCaptureProgress.fillAmount += Time.deltaTime * 0.025f;
-            isBeingCaptured = true;
+            imageFillCaptureProgress.fillAmount += Time.deltaTime * 0.025f; //Augmente le fillAmount selon le temps multiplié par 0.025f
+            isBeingCaptured = true; //Bool de capture à true
         } 
-        else
+        else //Sinon
         {
-            isBeingCaptured = false;
+            isBeingCaptured = false; //Bool de capture à false
         }
 
-        if (baseActive && isPresentCapture && !isPresentCharacter)
+        if (baseActive && isPresentCapture && !isPresentCharacter) //Si la base est actif, quelqu'un d'autre est dans la base et l'oocupant est absent
         {
-            floatCaptureProgress += Time.deltaTime * 0.1f;
+            floatCaptureProgress += Time.deltaTime * 0.025f; //Augmente le float selon le temps multiplié par 0.025
         }
 
-        if (baseActive && (imageFillCaptureProgress.fillAmount == 1f || floatCaptureProgress > 1f))
+        if (baseActive && (imageFillCaptureProgress.fillAmount == 1f || floatCaptureProgress > 1f)) //Si la base est actif et que soit l'image ou le float est au-dessus de 1 (rempli)
         {
-            baseActive = false;
+            baseActive = false; //Bool de la base est false (inactif)
         }
-
-        if (baseActive)
-        {
-            if (character != null)
-            {
-                if (!once)
-                {
-                    BaseDamageBenefit();
-                    BaseDefenseBenefit();
-                    once = true;
-                }
-            }
-        } 
     }
 }

@@ -6,8 +6,7 @@ using UnityEngine.AI;
 public class AI_Behavior : MonoBehaviour
 {
     private Enemy enemy;
-    [SerializeField] private Transform startPointPosition;
-    private bool isChasing = true;
+    [SerializeField] private Transform startPointPosition; //Référence à la base du joueur
 
     [SerializeField] private NavMeshAgent agent; //Mon NavMeshAgent
     [SerializeField] public List<GameObject> targetList = null; //Liste des cibles
@@ -38,7 +37,7 @@ public class AI_Behavior : MonoBehaviour
         pointIndex = Random.Range(0, patrolPoints.Length); //retourne un index alátoire de la liste des points de patrouille
         state = NormalState.GetState(); //référence au state pattern
         enemy = GetComponent<Enemy>();
-        baseArea = playerBase.GetComponent<BaseArea>();
+        baseArea = playerBase.GetComponent<BaseArea>(); //Cache de cu component BaseArea
     }
 
     // Update is called once per frame
@@ -46,7 +45,7 @@ public class AI_Behavior : MonoBehaviour
     {
         //patrouille
 
-        if (!this.state.CanAttackEnemy() || !this.state.GoToBase() || !this.state.DefendBase())
+        if (!this.state.CanAttackEnemy() || !this.state.GoToBase() || !this.state.DefendBase()) //Si lÍA est dans son Normal State
         {
             Invoke("OnPatrolling", 3f); //Invoque la méthode qui permet au navMesh de faire sa patrouille
         }
@@ -73,9 +72,9 @@ public class AI_Behavior : MonoBehaviour
                         {
                             agent.destination = agent.transform.position; // l'IA s'arrete à sa position actuelle
 
-                            transform.LookAt(target.transform.position);
+                            transform.LookAt(target.transform.position); //L'IA s''oriente vers sa cible
 
-                            timer += Time.deltaTime;
+                            timer += Time.deltaTime; //active le chrono
                             if (timer > 1f)
                             {
                                 GameObject fireBall = Instantiate(projectile, transform.position + (transform.forward * 3f), transform.rotation); //Fait une instanciation du projectile
@@ -89,27 +88,28 @@ public class AI_Behavior : MonoBehaviour
 
                 if (enemy.Hp <= (enemy.HpMax / 2))
                 {
-                    this.state = RunState.GetState();
+                    this.state = RunState.GetState(); // L'IA passe en mode fuite
+
                     CancelInvoke("OnPatrolling"); //Annule l'état de patrouille
-                    agent.destination = startPointPosition.position;
-                    if (enemy.Hp >= (enemy.HpMax * 0.75))
+                    agent.destination = startPointPosition.position; //L'IA se dirige vers sa base
+                    if (enemy.Hp >= (enemy.HpMax * 0.75)) // si le joueur récupère 75% de ses points HP, il retourne à l'arène
                     {
                         this.state = NormalState.GetState();
                     }
                 }
 
-                if (baseArea.isBeingCaptured)
+                if (baseArea.isBeingCaptured) //Si la base de l'IA est attaquée
                 {
-                    this.state = DefendState.GetState();
+                    this.state = DefendState.GetState(); //passage au mode défense
                     CancelInvoke("OnPatrolling"); //Annule l'état de patrouille
                     Debug.Log(state);
-                    if (this.state.DefendBase())
+                    if (this.state.DefendBase()) //un ennemi est dans la base de l'IA
                     {
-                        agent.destination = startPointPosition.position;
+                        agent.destination = startPointPosition.position; //L'IA se dirige vers sa base
                         Vector3 distanceFromStartPoint = agent.transform.position - startPointPosition.position;
-                        if (distanceFromStartPoint.magnitude < 30)
+                        if (distanceFromStartPoint.magnitude < 30) 
                         {
-                            this.state = AttackState.GetState();
+                            this.state = AttackState.GetState(); //si l'IA  est en mode et qu'un adversaire est à proximité, l'IA passe en mode attaque
                         }
                     }
                 }

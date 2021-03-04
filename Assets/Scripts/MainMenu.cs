@@ -6,9 +6,10 @@ public class MainMenu : MonoBehaviour
 {
 
     //Panels
-    [SerializeField] private GameObject pnl_MainMenu;
-    [SerializeField] private GameObject pnl_Options;
-    [SerializeField] private GameObject pnl_ChooseColor;
+    [SerializeField] private GameObject pnl_MainMenu; //Mon main menu 
+    [SerializeField] private GameObject pnl_Options; //menu options
+    [SerializeField] private GameObject pnl_HowToPlay; //menu how to play
+    [SerializeField] private GameObject pnl_ChooseColor; //séléction de couleur
 
 
     void Awake()
@@ -32,21 +33,17 @@ public class MainMenu : MonoBehaviour
     {
         pnl_MainMenu.SetActive(true);
         pnl_Options.SetActive(false);
+        pnl_HowToPlay.SetActive(false);
+    }
+
+    public void OnHowToPlay()
+    {
+        pnl_MainMenu.SetActive(false);
+        pnl_HowToPlay.SetActive(true);
     }
 
     public void OnQuitGame()
     {
-        Application.Quit();
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        Application.Quit(); //quitte l'application
     }
 }

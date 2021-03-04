@@ -4,64 +4,65 @@ using UnityEngine;
 
 public class ColourOpponent : MonoBehaviour
 {
-    [SerializeField] private GameObject panelArena = null;
-    [SerializeField] private GameObject panelColour = null;
-    private int[] arrayColour = new int[8];
-    private int colourTemp = 0;
-    private int colourNumber = 0;
+    [SerializeField] private GameObject panelArena = null; //GameObject qui représente le panel de l'arène
+    [SerializeField] private GameObject panelColour = null; //GameObject qui représente le panel des couleurs
+    [SerializeField] private GameObject panelMain = null; //GameObject qui représente le panel du menu principal
+    private int[] arrayColour = new int[8]; //Array de int pour les couleurs
+    private int colourTemp = 0; //int pour garder temporairement une couleur
+    private int colourNumber = 0; //int pour garder le numéro de la couleur
 
     // Start is called before the first frame update
     void Start()
     {
-        arrayColour[0] = 0;
-        arrayColour[1] = 1;
-        arrayColour[2] = 2;
-        arrayColour[3] = 3;
-        arrayColour[4] = 4;
-        arrayColour[5] = 5;
-        arrayColour[6] = 6;
-        arrayColour[7] = 7;
+        //initialiser les éléments de arrayColour par un chiffre
+        arrayColour[0] = 0; //Couleur Rouge
+        arrayColour[1] = 1; //Couleur Bleu
+        arrayColour[2] = 2; //Couleur Jaune
+        arrayColour[3] = 3; //Couleur Vert
+        arrayColour[4] = 4; //Couleur Orange
+        arrayColour[5] = 5; //Couleur Violet
+        arrayColour[6] = 6; //Couleur Bleu Pâle
+        arrayColour[7] = 7; //Couleur Vert Pâle
 
-        PlayerPrefs.DeleteKey("Player");
-        PlayerPrefs.DeleteKey("Enemy");
+        PlayerPrefs.DeleteKey("Player"); //Supprimer les data de couleur de Player
+        PlayerPrefs.DeleteKey("Enemy"); //Supprimer les data de couleur de Enemy
 
     }
 
-    public void ColourRestart()
+    public void ColourRestart() //Méthode pour remettre le array à la valeur initiale
     {
-        colourTemp = arrayColour[0];
+        colourTemp = arrayColour[0]; 
         arrayColour[0] = arrayColour[colourNumber];
         arrayColour[colourNumber] = colourTemp;
     }
-    public void ColourCheck()
+    public void ColourCheck() //Méthode pour vérifier si le array
     {
-        if (arrayColour[0] != 1)
+        if (arrayColour[0] != 1) //Condition If pour si la valeur de l'élément 0 dans arrayColour n'est pas 1
         {
-            ColourRestart();
+            ColourRestart(); //Aller à la méthode ColourRestart
         }
     }
-    public void ColourSave()
+    public void ColourSave() //Méthode pour sauvegarder la couleur choisie
     {
-        PlayerPrefs.SetInt("Player", arrayColour[0]);
-        for(int i = 1; i < arrayColour.Length; i++)
+        PlayerPrefs.SetInt("Player", arrayColour[0]); //Garder dans PlayerPrefs la couleur du joueur qui se retrouve à l'élément 0
+        for(int i = 1; i < arrayColour.Length; i++) //Boucle For pour traverser le arrayColour à partir de 1
         {
-            PlayerPrefs.SetInt("Enemy" + i, arrayColour[i]);
+            PlayerPrefs.SetInt("Enemy" + i, arrayColour[i]); //Garder dans PlayerPrefs la couleur des Opponents
         }
 
-        PlayerPrefs.Save();
+        PlayerPrefs.Save(); //Sauvegarder les données
     }
-    public void ChangePanel()
+    public void ChangePanel() //Méthode pour changer le panel de couleur au panel de l'arène
     {
         panelColour.SetActive(false);
         panelArena.SetActive(true);
     }
-    /*public string[] ColourExit()
+    public void ColourExit() //Méthode pour changer le panel de couleur au panel du menu principal
     {
         panelColour.SetActive(false);
-
-        return arrayColour;
-    }*/
-    public void ColourRed()
+        panelMain.SetActive(true);
+    }
+    public void ColourRed() //Méthode pour placer la couleur rouge à l'élément 0
     {
         ColourCheck();
 
@@ -71,7 +72,7 @@ public class ColourOpponent : MonoBehaviour
 
         ChangePanel();
     }
-    public void ColourBlue()
+    public void ColourBlue() //Méthode pour placer la couleur bleu à l'élément 0
     {
         ColourCheck();
 
@@ -84,7 +85,7 @@ public class ColourOpponent : MonoBehaviour
 
         ChangePanel();
     }
-    public void ColourYellow()
+    public void ColourYellow() //Méthode pour placer la couleur jaune à l'élément 0
     {
         ColourCheck();
 
@@ -97,7 +98,7 @@ public class ColourOpponent : MonoBehaviour
 
         ChangePanel();
     }
-    public void ColourGreen()
+    public void ColourGreen() //Méthode pour placer la couleur vert à l'élément 0
     {
         ColourCheck();
 
@@ -110,7 +111,7 @@ public class ColourOpponent : MonoBehaviour
 
         ChangePanel();
     }
-    public void ColourOrange()
+    public void ColourOrange() //Méthode pour placer la couleur orange à l'élément 0
     {
         ColourCheck();
 
@@ -123,7 +124,7 @@ public class ColourOpponent : MonoBehaviour
 
         ChangePanel();
     }
-    public void ColourPurple()
+    public void ColourPurple() //Méthode pour placer la couleur violet à l'élément 0
     {
         ColourCheck();
 
@@ -136,7 +137,7 @@ public class ColourOpponent : MonoBehaviour
 
         ChangePanel();
     }
-    public void ColourLightBlue()
+    public void ColourLightBlue() //Méthode pour placer la couleur bleu pâle à l'élément 0
     {
         ColourCheck();
 
@@ -149,7 +150,7 @@ public class ColourOpponent : MonoBehaviour
 
         ChangePanel();
     }
-    public void ColourLightGreen()
+    public void ColourLightGreen() //Méthode pour placer la couleur vert pâle à l'élément 0
     {
         ColourCheck();
 

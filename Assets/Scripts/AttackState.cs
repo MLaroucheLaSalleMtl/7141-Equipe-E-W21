@@ -17,17 +17,17 @@ public class AttackState : IState
         return instance;
     }
 
-    public bool CanAttackEnemy()
+    public bool CanAttackEnemy() //peut attaquer l'ennemi ?
     {
         return true;
     }
 
-    public bool GoToBase()
+    public bool GoToBase() //peut rentrer à sa base ?
     {
         return false;
     }
 
-    public bool DefendBase()
+    public bool DefendBase() //peut défendre sa base ?
     {
         return false;
     }
