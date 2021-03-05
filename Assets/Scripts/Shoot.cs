@@ -23,7 +23,7 @@ public class Shoot : MonoBehaviour
         timer += Time.deltaTime; //active le chrono
         if (isFiring)
         {
-            if (timer > 1f)
+            if (timer > 0.5f)
             {
                 GameObject fireBall = Instantiate(projectile, transform.position + (transform.forward * 3f), transform.rotation); //instanciation de mon projectile, son emplacement et sa direction
                 fireBall.GetComponent<Rigidbody>().AddForce(transform.forward * firePower, ForceMode.Impulse); //rajout de la force a mon projectile(rigidbody)

@@ -159,6 +159,9 @@ public class GameManager : MonoBehaviour
             CancelInvoke("OnDeployment"); //le déploiment est annulé après 3 secondes pour permettre au joueurs de patrouiller dans l'arène
         }
 
+        //Vérifier les Opponents dans la scène.
+        VerifyOpponentPresent();
+
         //Pause
         if (Input.GetKeyDown(KeyCode.Escape))
         {
