@@ -57,32 +57,28 @@ public class LocomotionV2 : MonoBehaviour
         jump = context.performed; //jump  =true
     }
 
+    void FaceMousePosition()
+    {
+        Plane playerplane = new Plane(Vector3.up, transform.position);
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        float hit;
+
+        if (playerplane.Raycast(ray, out hit))
+        {
+            Vector3 targetPoint = ray.GetPoint(hit);
+            Quaternion targetRot = Quaternion.LookRotation(targetPoint - transform.position);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, speed * Time.deltaTime);
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
 
-        if (Input.GetMouseButtonDown(1)) //si clique sur bouton droit de la souris
-        {
-            Vector3 clickposition = -Vector3.one;
-            clickposition = Camera.main.WorldToScreenPoint(Input.mousePosition + new Vector3(0, 0, 5f)); //attribution des valeurs du click de la souris dans le World space 
-
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //retourne l'emplacement de mon mouse click 
-
-            RaycastHit hit; //retourne le point de collision de mon rayon
-
-            if (Physics.Raycast(ray, out hit, 400f, layerMask)) //mon rayon, détéction du bout du rayon, distance max de détéction du click, layer associé au click)
-            {
-                clickposition = hit.point;
-                capman1.SetDestination(clickposition); //mon joueur se dirige vers la position du click
-            }
-
-            capman1.transform.LookAt(clickposition); //mon joueur s''oriente vers la position du click
-
-            Debug.Log(clickposition);
-        }
+        FaceMousePosition();
 
         //Déplacement du joueur
-        move = new Vector3(hAxis / 4, 0f, vAxis / 4);
+        move = new Vector3(hAxis / 2, 0f, vAxis / 2);
         float moveAngle = (Mathf.Atan2(move.x, move.z) * Mathf.Rad2Deg); //on calcule l'angle de muouvement et on le convertit en degré et le rendre relatif a langle de la caméra
         //float lookAngle = Mathf.LerpAngle(transform.eulerAngles.y, moveAngle, 0.25f); //Progressivement me tourner vers l'angle de déplacement
 

@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject[] characters = new GameObject[8]; //joueurs + IA
     [SerializeField] private GameObject[] mapPoints = new GameObject[8]; //GameObject qui représente la position des personnages dans le mini-map
     [SerializeField] private Material[] materialsColour = new Material[8]; //Couleur des personnages
+    [SerializeField] private Text[] charactersID = new Text[8]; //Text des noms des personnages Besoin de couleur et non material
 
     [SerializeField] private CharacterController player; //mon character controller
     [SerializeField] private Characters character = null; //mon joueur
@@ -75,13 +76,15 @@ public class GameManager : MonoBehaviour
     {
         characters[0].GetComponent<MeshRenderer>().material = materialsColour[PlayerPrefs.GetInt("Player", 0)]; //Donner le material du joueur au couleur dans PlayerPrefs de Player
         mapPoints[0].GetComponent<MeshRenderer>().material = materialsColour[PlayerPrefs.GetInt("Player", 0)]; //Donner le material de l'icône Mini-Map du joueur au couleur dans PlayerPrefs de Player
+        charactersID[0].color = materialsColour[PlayerPrefs.GetInt("Player", 0)].color; //Donner la couleur du Text du joueur au couleur dans PlayerPrefs de Player
         for (int i = 1; i < characters.Length; i++) //Boucle For pour traverser le array characters à partir de 1
         {
-            characters[i].GetComponent<MeshRenderer>().material = materialsColour[PlayerPrefs.GetInt("Enemy" + i, 0)]; //Donner le material de l'ennemi au couleur dans PlayerPrefs de Player
-            mapPoints[i].GetComponent<MeshRenderer>().material = materialsColour[PlayerPrefs.GetInt("Enemy" + i, 0)]; //Donner le material de l'icône Mini-Map de l'ennemi au couleur dans PlayerPrefs de Player
+            characters[i].GetComponent<MeshRenderer>().material = materialsColour[PlayerPrefs.GetInt("Enemy" + i, 0)]; //Donner le material de l'ennemi au couleur dans PlayerPrefs de Enemy
+            mapPoints[i].GetComponent<MeshRenderer>().material = materialsColour[PlayerPrefs.GetInt("Enemy" + i, 0)]; //Donner le material de l'icône Mini-Map de l'ennemi au couleur dans PlayerPrefs de Enemy
+            charactersID[i].color = materialsColour[PlayerPrefs.GetInt("Enemy" + i, 0)].color; //Donner la couleur du Text de l'enemmi au couleur dans PlayerPrefs de Enemy
         }
     }
-
+    
     public void OnDeployment() //Méthode pour déployer les characters
     {
         for (int i = 0; i < pointStart.Length; i++) //Boucle For pour traverser le array pointStart
@@ -177,9 +180,9 @@ public class GameManager : MonoBehaviour
 
         //TimeScore
         score = timer * multiplier; //mon score dnas le temps
-        finalScore = score; //score final
         hpScore = character.GetComponent<Characters>().Hp * multiplier; //mes points HP * bonus
-        Debug.Log(score);
+        finalScore = score + hpScore; //score final
+        //Debug.Log(score);
         if (isGameOver || hasWon)
         {
             if (character.GetComponent<Characters>().Hp < 0)
