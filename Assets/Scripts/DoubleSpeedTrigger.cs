@@ -2,27 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DoubleSpeedTrigger : Power
+public class DoubleSpeedTrigger : MonoBehaviour
 {
-    private GameObject prefabDoubleSpeed;
-    private Power power;
+    private GameManager manager; //en faire pour chaque pouvoir
 
     // Start is called before the first frame update
     void Start()
     {
-        prefabDoubleSpeed = GetComponent<GameObject>();
-        power = GetComponent<Power>();
+        manager = GameManager.instance;
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        if (collision.gameObject.tag == "Character")
+        if (other.tag == "Character")
         {
-            power.GetComponent<Power>().isDoubleSpeed = true;
-            power.GetComponent<Power>().isActivePower = true;
-            Debug.Log("Oncollision");
-            Debug.Log(power.isDoubleSpeed);
-            //Destroy(gameObject);
+            manager.pDoubleSpeed++;
+            Debug.Log("Double Speed acquired");
+            Destroy(gameObject);
         }
     }
 }

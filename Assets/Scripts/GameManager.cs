@@ -8,7 +8,35 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    //Inventaire
+    public int pInvisibility = 0;
+    public int pInvincibility = 0;
+    public int pDoubleDamage = 0;
+    public int pDoubleSpeed = 0;
+    public int pDoubleScore = 0;
+    public int pInstantHealing = 0;
+    [SerializeField] private GameObject okIcon1 = null;
+    [SerializeField] private GameObject okIcon2 = null;
+    [SerializeField] private GameObject okIcon3 = null;
+    [SerializeField] private GameObject okIcon4 = null;
+    [SerializeField] private GameObject okIcon5 = null;
+    [SerializeField] private GameObject okIcon6 = null;
+    [SerializeField] private GameObject nokIcon1 = null;
+    [SerializeField] private GameObject nokIcon2 = null;
+    [SerializeField] private GameObject nokIcon3 = null;
+    [SerializeField] private GameObject nokIcon4 = null;
+    [SerializeField] private GameObject nokIcon5 = null;
+    [SerializeField] private GameObject nokIcon6 = null;
+    //Booléene pour les pouvoirs(Input system)
+    public bool isUsingInvisibility = false;
+    public bool isUsingInvincibility = false;
+    public bool isUsingDoubleDamage = false;
+    public bool isUsingDoubleSpeed = false;
+    public bool isUsingDoubleScore = false;
+    public bool isUsingInstantHealing = false;
 
+    private Power power; //Référence aus Scipt Power
+    [SerializeField] private GameObject powerGO; //Référence aus Scipt Power
     public static GameManager instance = null; //mon Gamemanager
 
     [SerializeField] private GameObject[] pointStart = null; //point de départ du joueur
@@ -66,10 +94,41 @@ public class GameManager : MonoBehaviour
         pnlPauseMenu.SetActive(false);
     }
 
+
     // Start is called before the first frame update
     void Start()
     {
+        power = GetComponent<Power>();
         SetColour(); //Aller à la méthode SetColour pour mettre le couleur au Player et Opponent
+    }
+    public void OnInvisbility(InputAction.CallbackContext context)
+    {
+        isUsingInvisibility = context.performed;
+    }
+
+    public void OnInvincibility(InputAction.CallbackContext context)
+    {
+        isUsingInvincibility = context.performed;
+    }
+
+    public void OnDoubleDamage(InputAction.CallbackContext context)
+    {
+        isUsingDoubleDamage = context.performed;
+    }
+
+    public void OnDoubleSpeed(InputAction.CallbackContext context)
+    {
+        isUsingDoubleSpeed = context.performed;
+    }
+
+    public void OnDoubleScore(InputAction.CallbackContext context)
+    {
+        isUsingDoubleScore = context.performed;
+    }
+
+    public void OnInstantHealing(InputAction.CallbackContext context)
+    {
+        isUsingInstantHealing = context.performed;
     }
 
     public void SetColour() //Méthode pour mettre la couleur
@@ -195,6 +254,11 @@ public class GameManager : MonoBehaviour
                 timeScoreTxtGV.text = "Time Score: " + finalScore.ToString("F4");
                 hpScoreTxtGV.text = "HP Score: " + hpScore.ToString("F4");
                 totalScoreTxtGV.text = "Total Score: " + finalScore.ToString("F4");
+                if(powerGO.GetComponent<Power>().isDoubleScore) //A revoir
+                {
+                    finalScore = finalScore * 2;
+                    totalScoreTxtGV.text = "Total Score: " + finalScore.ToString("F4");
+                }
             }
             else
             {
@@ -214,5 +278,80 @@ public class GameManager : MonoBehaviour
         int minutes = (int) chronoTime / 60; // minutes écoulés
         int seconds = (int) chronoTime - (minutes * 60); //secondes écoulées
         chrono.text = "Time : " + minutes.ToString("D2") + ":" + seconds.ToString("D2"); //convertit le temps passé en string pour l'afficher sur le canvas txt_timer
+
+        
+        //Debug.Log(pInvisibility);
+        //Inventaire
+        //invisbility
+        if(pInvisibility > 0) 
+        { 
+            okIcon1.SetActive(true);
+            nokIcon1.SetActive(false);
+        } 
+        else 
+        {
+            okIcon1.SetActive(false);
+            nokIcon1.SetActive(true);
+        }
+
+        //invincibility
+        if (pInvincibility > 0)
+        {
+            okIcon2.SetActive(true);
+            nokIcon2.SetActive(false);
+        }
+        else
+        {
+            okIcon2.SetActive(false);
+            nokIcon2.SetActive(true);
+        }
+
+        //instant healing
+        if (pInstantHealing > 0)
+        {
+            okIcon3.SetActive(true);
+            nokIcon3.SetActive(false);
+        }
+        else
+        {
+            okIcon3.SetActive(false);
+            nokIcon3.SetActive(true);
+        }
+
+        //double speed
+        if (pDoubleSpeed > 0)
+        {
+            okIcon4.SetActive(true);
+            nokIcon4.SetActive(false);
+        }
+        else
+        {
+            okIcon4.SetActive(false);
+            nokIcon4.SetActive(true);
+        }
+
+        //double damage
+        if (pDoubleDamage > 0)
+        {
+            okIcon5.SetActive(true);
+            nokIcon5.SetActive(false);
+        }
+        else
+        {
+            okIcon5.SetActive(false);
+            nokIcon5.SetActive(true);
+        }
+
+        //double score
+        if (pDoubleScore > 0)
+        {
+            okIcon6.SetActive(true);
+            nokIcon6.SetActive(false);
+        }
+        else
+        {
+            okIcon6.SetActive(false);
+            nokIcon6.SetActive(true);
+        }
     }
 }

@@ -30,9 +30,57 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Jump",
+                    "name": "Melee",
+                    "type": "Button",
+                    "id": "75fe6d9e-9d21-4bc7-9729-8f4140b28a86",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "PInvisibility",
                     "type": "Button",
                     "id": "3b6211c7-89fa-48eb-acbc-a03a14722477",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "PInvincibility",
+                    "type": "Button",
+                    "id": "833d484a-238b-4f74-a194-e1f8f1436b22",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "PInstantHealing",
+                    "type": "Button",
+                    "id": "28ff188d-b1ea-4031-9ac2-19a98f19a9d5",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "PDoubleSpeed",
+                    "type": "Button",
+                    "id": "4e72e9a5-9133-40bc-a7c5-91e932249816",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "PDoubleDamage",
+                    "type": "Button",
+                    "id": "9c6dbd8d-6ab5-4857-8dea-61ef4ea5fa90",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "PDoubleScore",
+                    "type": "Button",
+                    "id": "893d0cdb-40bc-4788-9842-188bb5853ece",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
@@ -273,11 +321,77 @@
                 {
                     "name": "",
                     "id": "f655d38e-4182-4ff6-a09d-54aeb4e43140",
-                    "path": "<Keyboard>/c",
+                    "path": "<Keyboard>/1",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "Jump",
+                    "action": "PInvisibility",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7933b7bb-29b6-49e6-a48f-14bee923a48c",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "PInvincibility",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c74f9d5c-b626-4ab8-bff5-70ef4f332e51",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "PInstantHealing",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c35170ed-d164-4b53-83de-b7e738b2624b",
+                    "path": "<Keyboard>/4",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "PDoubleSpeed",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a4f32f67-99af-4b00-be15-f04c0ca2e184",
+                    "path": "<Keyboard>/5",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "PDoubleDamage",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "de2b6377-d7b8-46e8-ae09-7ab259db2f94",
+                    "path": "<Keyboard>/6",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "PDoubleScore",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "94289076-85d5-4902-8bf2-1a838217ea51",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Melee",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

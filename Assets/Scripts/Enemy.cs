@@ -10,6 +10,9 @@ public class Enemy : Characters
     public Enemy(float hp, float defense) : base(hp, defense) { } //Constructeur avec les valeurs du script Characters
 
     private BaseArea baseAreaBenefit; //Script BaseArea
+    [SerializeField] private GameObject player = null;
+    private GameObject damageOrigin = null;
+    private string dmgType = " ";
 
     [SerializeField] private GameObject baseArea = null; //GameObject pour associer le baseArea au opponent
     [SerializeField] private Slider sliderHealthBar = null; //Silder pour ajuster la valeur de la barre de vie.
@@ -18,9 +21,34 @@ public class Enemy : Characters
 
     private float dmgReceived = 0; //float pour garder la valeur de damage recu.
 
-    public override void ReceiveDamage(Collision collision)
+    public override void ReceiveDamage()
     {
-        dmgReceived = collision.gameObject.GetComponent<BallTimer>().BallDamage * baseAreaBenefit.BaseDamageBenefit() - this.Defense * baseAreaBenefit.BaseDefenseBenefit(); //Équation qui enlève le damage par la défense 
+        //dmgReceived = collision.gameObject.GetComponent<BallTimer>().BallDamage * baseAreaBenefit.BaseDamageBenefit() - this.Defense * baseAreaBenefit.BaseDefenseBenefit(); //Équation qui enlève le damage par la défense 
+
+
+        if (damageOrigin == player) 
+        {
+            if (dmgType == "Melee")
+            {
+                dmgReceived = damageOrigin.GetComponent<Equipment>().DamageMelee(damageOrigin.GetComponent<Player>().MyMelee) * damageOrigin.GetComponent<Player>().GetPlayerBaseAreaBenefit().BaseDamageBenefit() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
+            }
+            else if (dmgType == "Range")
+            {
+                dmgReceived = damageOrigin.GetComponent<Equipment>().DamageRange(damageOrigin.GetComponent<Player>().MyRange) * damageOrigin.GetComponent<Player>().GetPlayerBaseAreaBenefit().BaseDamageBenefit() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
+            }
+        }
+        else 
+        {
+            if (dmgType == "Melee")
+            {
+                dmgReceived = damageOrigin.GetComponent<Equipment>().DamageMelee(damageOrigin.GetComponent<Enemy>().MyMelee) * damageOrigin.GetComponent<Enemy>().GetEnemyBaseAreaBenefit().BaseDamageBenefit() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
+            }
+            else if (dmgType == "Range")
+            {
+                dmgReceived = damageOrigin.GetComponent<Equipment>().DamageRange(damageOrigin.GetComponent<Enemy>().MyRange) * damageOrigin.GetComponent<Enemy>().GetEnemyBaseAreaBenefit().BaseDamageBenefit() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
+            }
+        }
+
         this.Hp -= dmgReceived; //Soustrait le Hp par le dmgReceived.
 
         if (this.Hp <= 0f) //Condition If pour si la valeur Hp est inférieure ou égale à 0
@@ -44,8 +72,20 @@ public class Enemy : Characters
     {
         if(collision.gameObject.tag == "Damage") //Condition If pour si le tag du gameObject de la collision est un "Damage"
         {
-            ReceiveDamage(collision); //Aller à la méthode ReceiveDamage() avec la collision
-        } 
+            //ReceiveDamage(collision); //Aller à la méthode ReceiveDamage() avec la collision
+        }
+        if (collision.gameObject.tag == "Melee")
+        {
+            damageOrigin = collision.gameObject.GetComponent<Weapon>().GetOrigin(); 
+            dmgType = "Melee";
+            ReceiveDamage();
+        }
+        if (collision.gameObject.tag == "Range")
+        {
+            damageOrigin = collision.gameObject.GetComponent<Weapon>().GetOrigin();
+            dmgType = "Range";
+            ReceiveDamage();
+        }
     }
 
     // Start is called before the first frame update
@@ -96,6 +136,11 @@ public class Enemy : Characters
         {
             txtHealthBar.text = Convert.ToInt32(this.Hp * 0).ToString("D1"); //Afficher 0
         }
+    }
+
+    public BaseArea GetEnemyBaseAreaBenefit()
+    {
+        return baseAreaBenefit;
     }
 
     // Update is called once per frame

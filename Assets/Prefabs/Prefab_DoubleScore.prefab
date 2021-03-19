@@ -13,10 +13,10 @@ GameObject:
   - component: {fileID: 7232183212946257456}
   - component: {fileID: 7232183212946257457}
   - component: {fileID: 7232183212946257458}
-  - component: {fileID: 7232183212946257469}
+  - component: {fileID: -3367942734907575260}
   m_Layer: 0
   m_Name: Prefab_DoubleScore
-  m_TagString: Untagged
+  m_TagString: DoubleScore
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -92,7 +92,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7232183212946257459}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
@@ -108,12 +108,12 @@ Rigidbody:
   m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &7232183212946257469
+--- !u!114 &-3367942734907575260
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -125,13 +125,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec880f15db0cdc449a5c6b53a4267192, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  capman: {fileID: 0}
-  agentCapman: {fileID: 0}
-  myRenderer: {fileID: 0}
-  isActivePower: 0
-  isInvisible: 0
-  isInvincible: 0
-  isDoubleSpeed: 0
-  isDoubleDamage: 0
-  isDoubleScore: 0
-  isInstantHealing: 0

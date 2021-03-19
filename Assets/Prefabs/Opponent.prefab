@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7039646426802567200}
   - component: {fileID: -5456147033639219979}
   - component: {fileID: 5813842938928586177}
+  - component: {fileID: -5862828815954777905}
   m_Layer: 0
   m_Name: Opponent
   m_TagString: Untagged
@@ -112,9 +113,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hp: 200
   hpMax: 200
-  damage: 50
-  defense: 0
-  playerGO: {fileID: 2689854717431184027, guid: d9b5fe1bd9b14cc4dbc1dfd0e69c8e66, type: 3}
+  player: {fileID: 0}
+  baseArea: {fileID: 0}
+  sliderHealthBar: {fileID: 0}
+  fillHealthBar: {fileID: 0}
+  txtHealthBar: {fileID: 0}
 --- !u!54 &5813842938928586177
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -131,3 +134,15 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &-5862828815954777905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7162662822393016599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8885b15876a536741a5d33f546da83d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

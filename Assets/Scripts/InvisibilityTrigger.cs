@@ -1,28 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class InvisibilityTrigger : Power
+public class InvisibilityTrigger : MonoBehaviour
 {
-    private GameObject prefabInvisibility;
-    private Power power;
+    private GameManager manager; //en faire pour chaque pouvoir
 
     // Start is called before the first frame update
     void Start()
     {
-        prefabInvisibility = GetComponent<GameObject>();
-        power = GetComponent<Power>();
+        manager = GameManager.instance;
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        if (collision.gameObject.tag == "Character")
+        if (other.tag == "Character")
         {
-            power.GetComponent<Power>().isInvisible = true;
-            power.GetComponent<Power>().isActivePower = true;
-            Debug.Log("Oncollision");
-            Debug.Log(power.isInvisible);
-            //Destroy(gameObject);
+            manager.pInvisibility++;
+            Debug.Log("Invisibility acquired");
+            Destroy(gameObject);
         }
     }
 }
