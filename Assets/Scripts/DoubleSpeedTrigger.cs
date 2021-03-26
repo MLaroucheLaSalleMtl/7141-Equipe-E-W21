@@ -12,13 +12,17 @@ public class DoubleSpeedTrigger : MonoBehaviour
         manager = GameManager.instance;
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-        if (other.tag == "Character")
+        if (collision.gameObject.tag == "Character")
         {
             manager.pDoubleSpeed++;
-            Debug.Log("Double Speed acquired");
+            Debug.Log("Invincibility acquired");
             Destroy(gameObject);
+        }
+        else if (collision.gameObject.name != "CapMan")
+        {
+            collision.gameObject.GetComponent<Enemy>().eDoubleSpeed++;
         }
     }
 }

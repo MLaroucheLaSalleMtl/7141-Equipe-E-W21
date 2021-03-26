@@ -6,6 +6,7 @@ using UnityEngine.AI;
 public class AI_Behavior : MonoBehaviour
 {
     private Enemy enemy;
+    private Enemy enemyGO;
     [SerializeField] private Transform startPointPosition; //Référence à la base du joueur
 
     [SerializeField] private NavMeshAgent agent; //Mon NavMeshAgent
@@ -25,6 +26,24 @@ public class AI_Behavior : MonoBehaviour
     private BaseArea baseArea;
     [SerializeField] private GameObject playerBase;
 
+    private GameObject rangedWeapon = null;
+    [SerializeField] private Equipment.typeMelee myMelee;
+    [SerializeField] private Equipment.typeRange myRange;
+    [SerializeField] private GameObject projectileRock = null;
+    [SerializeField] private GameObject projectileSlinger = null;
+    [SerializeField] private GameObject projectileBow = null;
+    [SerializeField] private GameObject projectileGun = null;
+    [SerializeField] private GameObject knifeObject;
+    [SerializeField] private GameObject swordObject;
+    [SerializeField] private GameObject spearObject;
+    [SerializeField] private GameObject hammerObject;
+    [SerializeField] private Animator knifeAnim;
+    [SerializeField] private Animator swordAnim;
+    [SerializeField] private Animator spearAnim;
+    [SerializeField] private Animator hammerAnim;
+    private bool timerMeleeOn = false;
+    private float timerMelee = 0;
+
     void Awake()
     {
 
@@ -37,7 +56,13 @@ public class AI_Behavior : MonoBehaviour
         pointIndex = Random.Range(0, patrolPoints.Length); //retourne un index alátoire de la liste des points de patrouille
         state = NormalState.GetState(); //référence au state pattern
         enemy = GetComponent<Enemy>();
+        enemyGO = GetComponent<Enemy>();
         baseArea = playerBase.GetComponent<BaseArea>(); //Cache de cu component BaseArea
+
+        knifeObject.GetComponent<Weapon>().SetOrigin(gameObject);
+        swordObject.GetComponent<Weapon>().SetOrigin(gameObject);
+        spearObject.GetComponent<Weapon>().SetOrigin(gameObject);
+        hammerObject.GetComponent<Weapon>().SetOrigin(gameObject);
     }
 
     // Update is called once per frame
@@ -75,15 +100,30 @@ public class AI_Behavior : MonoBehaviour
                             transform.LookAt(target.transform.position); //L'IA s''oriente vers sa cible
 
                             timer += Time.deltaTime; //active le chrono
-                            if (timer > 1f)
+                            
+                            //Activation d'un power si disponible dans l'inventaire
+                            enemyGO.GetComponent<Enemy>().activeInvisibility = true; //Pouvoir d'invisibilité
+                            enemyGO.GetComponent<Enemy>().activeInvincibility = true; //Pouvoir d'invincibilité
+                            enemyGO.GetComponent<Enemy>().activeDoubleDamage = true; //Pouvoir Double Damage
+
+                            if (distanceFromEnemy.magnitude < 20)
                             {
+                                StrikeMeleeWeapon();
+                            }
+                            else if (timer > 1f)
+                            {
+                                /*
                                 GameObject fireBall = Instantiate(projectile, transform.position + (transform.forward * 3f), transform.rotation); //Fait une instanciation du projectile
                                 fireBall.GetComponent<Rigidbody>().AddForce(transform.forward * firePower, ForceMode.Impulse); //Donne une force et une direction au projectile instacié
+                                */
+
+                                SetRangedWeapon();//Testing Purpose
+                                ShootRangedWeapon();
+
                                 timer = 0f;
                             }
                         }
                     }
-
                 }
 
                 if (enemy.Hp <= (enemy.HpMax / 2))
@@ -126,6 +166,15 @@ public class AI_Behavior : MonoBehaviour
             }
         }
 
+        if (timerMeleeOn)
+        {
+            timerMelee -= Time.deltaTime;
+            if (timerMelee <= 0f)
+            {
+                timerMelee = 0f;
+                timerMeleeOn = false;
+            }
+        }
     }
 
     private void OnPatrolling()
@@ -145,4 +194,121 @@ public class AI_Behavior : MonoBehaviour
             }
         }
     }
+    public void SetMelee(Equipment.typeMelee enemyMelee)
+    {
+        myMelee = enemyMelee;
+    }
+
+    public void SetRange(Equipment.typeRange enemyRange)
+    {
+        myRange = enemyRange;
+        SetRangedWeapon();
+    }
+
+    public void SetRangedWeapon()
+    {
+        if (myRange == Equipment.typeRange.Rock)
+        {
+            rangedWeapon = projectileRock;
+        }
+        else if (myRange == Equipment.typeRange.Slinger)
+        {
+            rangedWeapon = projectileSlinger;
+        }
+        else if (myRange == Equipment.typeRange.Bow)
+        {
+            rangedWeapon = projectileBow;
+        }
+        else if (myRange == Equipment.typeRange.Gun)
+        {
+            rangedWeapon = projectileGun;
+        }
+    }
+
+    public void ShootRangedWeapon()
+    {
+        if (rangedWeapon == projectileRock)
+        {
+            GameObject rangedAttack = Instantiate(rangedWeapon, transform.position + (transform.forward * 3f), transform.rotation);
+            rangedAttack.GetComponent<Weapon>().SetOrigin(gameObject);
+            rangedAttack.GetComponent<Rigidbody>().AddForce(transform.forward * 80, ForceMode.Impulse);
+        }
+        else if (rangedWeapon == projectileSlinger)
+        {
+            GameObject rangedAttack = Instantiate(rangedWeapon, transform.position + (transform.forward * 3f), transform.rotation);
+            rangedAttack.GetComponent<Weapon>().SetOrigin(gameObject);
+            rangedAttack.GetComponent<Rigidbody>().AddForce(transform.forward * 100, ForceMode.Impulse);
+        }
+        else if (rangedWeapon == projectileBow)
+        {
+            GameObject rangedAttack = Instantiate(rangedWeapon, transform.position + (transform.forward * 5f), transform.rotation);
+            rangedAttack.GetComponent<Weapon>().SetOrigin(gameObject);
+            rangedAttack.GetComponent<Rigidbody>().AddForce(transform.forward * 125, ForceMode.Impulse);
+        }
+        else if (rangedWeapon == projectileGun)
+        {
+            GameObject rangedAttack = Instantiate(rangedWeapon, transform.position + (transform.forward * 3f), transform.rotation);
+            rangedAttack.GetComponent<Weapon>().SetOrigin(gameObject);
+            rangedAttack.GetComponent<Rigidbody>().AddForce(transform.forward * 150, ForceMode.Impulse);
+        }
+
+    }
+
+    public void StrikeMeleeWeapon()
+    {
+        if (!timerMeleeOn)
+        {
+            timerMeleeOn = true;
+
+            if (myMelee == Equipment.typeMelee.Knife)
+            {
+                timerMelee = 0.5f;
+                knifeObject.SetActive(true);
+                if (knifeAnim) knifeAnim.SetTrigger("Attack");
+                Invoke("SetInactiveKnife", timerMelee);
+            }
+            else if (myMelee == Equipment.typeMelee.Sword)
+            {
+                timerMelee = 0.5f;
+                swordObject.SetActive(true);
+                if (swordAnim) swordAnim.SetTrigger("Attack");
+                Invoke("SetInactiveSword", timerMelee);
+            }
+            else if (myMelee == Equipment.typeMelee.Spear)
+            {
+                timerMelee = 0.75f;
+                spearObject.SetActive(true);
+                if (spearAnim) spearAnim.SetTrigger("Attack");
+                Invoke("SetInactiveSpear", timerMelee);
+            }
+            else if (myMelee == Equipment.typeMelee.Hammer)
+            {
+                timerMelee = 1f;
+                hammerObject.SetActive(true);
+                if (hammerAnim) hammerAnim.SetTrigger("Attack");
+                Invoke("SetInactiveHammer", timerMelee);
+            }
+        }
+    }
+
+    public void SetInactiveKnife()
+    {
+        knifeObject.SetActive(false);
+    }
+
+    public void SetInactiveSword()
+    {
+        swordObject.SetActive(false);
+    }
+
+    public void SetInactiveSpear()
+    {
+        spearObject.SetActive(false);
+    }
+
+    public void SetInactiveHammer()
+    {
+        hammerObject.SetActive(false);
+    }
+
 }

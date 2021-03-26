@@ -3,9 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.AI;
 
 public class Enemy : Characters
 {
+
     public Enemy() { } //Constructeur par défaut
     public Enemy(float hp, float defense) : base(hp, defense) { } //Constructeur avec les valeurs du script Characters
 
@@ -21,6 +23,24 @@ public class Enemy : Characters
 
     private float dmgReceived = 0; //float pour garder la valeur de damage recu.
 
+    private GameManager manager;
+    [SerializeField] private Renderer myRenderer;
+    [SerializeField] private NavMeshAgent agent;
+    private float timer = 10f;
+
+    //Variables d'incrémentation de pouvoirs
+    public int eInvisibility = 0;
+    public int eInvincibility = 0;
+    public int eDoubleDamage = 0;
+    public int eDoubleSpeed = 0;
+    public int eInstantHealing = 0;
+    
+    //Activation des pouvoirs
+    public bool activeInvisibility = false;
+    public bool activeInvincibility = false;
+    public bool activeDoubleDamage = false;
+
+
     public override void ReceiveDamage()
     {
         //dmgReceived = collision.gameObject.GetComponent<BallTimer>().BallDamage * baseAreaBenefit.BaseDamageBenefit() - this.Defense * baseAreaBenefit.BaseDefenseBenefit(); //Équation qui enlève le damage par la défense 
@@ -30,11 +50,11 @@ public class Enemy : Characters
         {
             if (dmgType == "Melee")
             {
-                dmgReceived = damageOrigin.GetComponent<Equipment>().DamageMelee(damageOrigin.GetComponent<Player>().MyMelee) * damageOrigin.GetComponent<Player>().GetPlayerBaseAreaBenefit().BaseDamageBenefit() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
+                dmgReceived = damageOrigin.GetComponent<Equipment>().DamageMelee(damageOrigin.GetComponent<Player>().MyMelee) * damageOrigin.GetComponent<Player>().GetPlayerBaseAreaBenefit().BaseDamageBenefit() * damageOrigin.GetComponent<Player>().SendDoubleDamageOn() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
             }
             else if (dmgType == "Range")
             {
-                dmgReceived = damageOrigin.GetComponent<Equipment>().DamageRange(damageOrigin.GetComponent<Player>().MyRange) * damageOrigin.GetComponent<Player>().GetPlayerBaseAreaBenefit().BaseDamageBenefit() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
+                dmgReceived = damageOrigin.GetComponent<Equipment>().DamageRange(damageOrigin.GetComponent<Player>().MyRange) * damageOrigin.GetComponent<Player>().GetPlayerBaseAreaBenefit().BaseDamageBenefit() * damageOrigin.GetComponent<Player>().SendDoubleDamageOn() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
             }
         }
         else 
@@ -92,6 +112,9 @@ public class Enemy : Characters
     void Start()
     {
         baseAreaBenefit = baseArea.GetComponent<BaseArea>(); //Cache le baseAreaBenefit
+        gameObject.GetComponent<AI_Behavior>().SetMelee(MyMelee); //Need to call it when changing melee
+        gameObject.GetComponent<AI_Behavior>().SetRange(MyRange); //Need to call it when changing range
+        manager = GameManager.instance; //Référence au GameMnager
     }
 
     public void SetHealthBar() //Méthode pour ajuster la barre de vie
@@ -143,9 +166,97 @@ public class Enemy : Characters
         return baseAreaBenefit;
     }
 
+    private void InstantHealing()
+    {
+        if (this.eInstantHealing > 0)
+        {
+            timer -= Time.deltaTime;
+            this.Hp = this.HpMax;
+            eInstantHealing--;
+        }
+    }
+
+    private void DoubleDamage()
+    {
+        if (this.eDoubleDamage > 0)
+        {
+            //A FAIRE
+        }
+    }
+
+    private void DoubleSpeed()
+    {
+        if (this.eDoubleSpeed > 0)
+        {
+            timer -= Time.deltaTime;
+            agent.speed = 35f;
+            eDoubleSpeed--;
+            if (timer <= 0f)
+            {
+                agent.speed = 25f;
+                timer = 10f;
+            }
+        }
+    }
+
+    private void Invincibility()
+    {
+        if (this.eInvincibility > 0)
+        {
+            timer -= Time.deltaTime;
+            float enemyDefense = this.Defense;
+            this.Defense = 50f;
+            eInvincibility--;
+            if (timer <= 0f)
+            {
+                this.Defense = enemyDefense;
+                timer = 10f;
+            }
+        }
+    }
+
+    private void Invisibility()
+    {
+        if (this.eInvisibility > 0)
+        {
+            timer -= Time.deltaTime;
+            myRenderer.enabled = false;
+            eInvisibility--;
+            if (timer <= 0f)
+            {
+                myRenderer.enabled = true;
+                timer = 10f;
+            }
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
         SetHealthBar(); //Aller à la méthode SetHealthBar() pour ajuster la barre de vie du joueur.
+
+        if (activeInvisibility)
+        {
+            Invisibility();
+        }
+
+
+        if (activeInvisibility)
+        {
+            Invincibility();
+        }
+
+
+        DoubleSpeed();
+
+
+        if (activeInvisibility)
+        {
+            DoubleDamage();
+        }
+
+        InstantHealing();
+
     }
+
 }

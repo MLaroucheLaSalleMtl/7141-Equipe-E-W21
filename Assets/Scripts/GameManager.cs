@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour
     public int pDoubleSpeed = 0;
     public int pDoubleScore = 0;
     public int pInstantHealing = 0;
+
+    //Icone Pour inventaire
     [SerializeField] private GameObject okIcon1 = null;
     [SerializeField] private GameObject okIcon2 = null;
     [SerializeField] private GameObject okIcon3 = null;
@@ -27,6 +29,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject nokIcon4 = null;
     [SerializeField] private GameObject nokIcon5 = null;
     [SerializeField] private GameObject nokIcon6 = null;
+
     //Booléene pour les pouvoirs(Input system)
     public bool isUsingInvisibility = false;
     public bool isUsingInvincibility = false;
@@ -44,10 +47,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject[] mapPoints = new GameObject[8]; //GameObject qui représente la position des personnages dans le mini-map
     [SerializeField] private Material[] materialsColour = new Material[8]; //Couleur des personnages
     [SerializeField] private Text[] charactersID = new Text[8]; //Text des noms des personnages Besoin de couleur et non material
+    [SerializeField] private GameObject[] arrayEquipmentCard = new GameObject[16];
 
     [SerializeField] private CharacterController player; //mon character controller
     [SerializeField] private Characters character = null; //mon joueur
 
+    private int equipCardCount = 0;
+    private int equipCardRandom = 0;
+    private bool onceDeploy1 = false;
+    private bool onceDeploy2 = false;
 
     //panelpause
     [SerializeField] private GameObject pnlPauseMenu; //Menu pause
@@ -100,6 +108,7 @@ public class GameManager : MonoBehaviour
     {
         power = GetComponent<Power>();
         SetColour(); //Aller à la méthode SetColour pour mettre le couleur au Player et Opponent
+        DeployEquipmentCard();
     }
     public void OnInvisbility(InputAction.CallbackContext context)
     {
@@ -144,6 +153,34 @@ public class GameManager : MonoBehaviour
         }
     }
     
+    public void DeployEquipmentCard()
+    {
+        DestroyEquipmentCard();
+
+        equipCardCount = 0;
+
+        do
+        {
+            do
+            {
+                equipCardRandom = UnityEngine.Random.Range(0, arrayEquipmentCard.Length);
+            } while (arrayEquipmentCard[equipCardRandom].activeInHierarchy);
+            arrayEquipmentCard[equipCardRandom].SetActive(true);
+            equipCardCount++;
+        } while (equipCardCount < 8);
+    }
+
+    public void DestroyEquipmentCard()
+    {
+        for(int i = 0; i < arrayEquipmentCard.Length; i++)
+        {
+            if (arrayEquipmentCard[i].activeInHierarchy)
+            {
+                arrayEquipmentCard[i].SetActive(false);
+            }
+        }
+    }
+
     public void OnDeployment() //Méthode pour déployer les characters
     {
         for (int i = 0; i < pointStart.Length; i++) //Boucle For pour traverser le array pointStart
@@ -236,6 +273,19 @@ public class GameManager : MonoBehaviour
                 PauseGame(); //mets le jeu en pause
             }
         }
+
+        //Deploy Equipment Card at Start, 2 min and 5 min
+        if(timer >= 120f && !onceDeploy1)
+        {
+            onceDeploy1 = true;
+            DeployEquipmentCard();
+        }
+        if(timer >= 300f && !onceDeploy2)
+        {
+            onceDeploy2 = true;
+            DeployEquipmentCard();
+        }
+
 
         //TimeScore
         score = timer * multiplier; //mon score dnas le temps

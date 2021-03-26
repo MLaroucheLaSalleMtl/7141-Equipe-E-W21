@@ -16,6 +16,8 @@ public class Player : Characters
 
     private GameObject damageOrigin = null;
     private string dmgType = " ";
+    private bool iPowerOn = false;
+    private float dmgPowerOn = 1f;
 
     [SerializeField] private GameObject baseArea = null; //GameObject pour le baseArea du joueur
     [SerializeField] private Slider sliderHealthBar = null; //Slider pour la barre de vie du joueur
@@ -27,17 +29,19 @@ public class Player : Characters
     public override void ReceiveDamage() //Méthode pour calculer la vie du joueur selon le dégât reçu
     {
         //dmgReceived = collision.gameObject.GetComponent<BallTimer>().BallDamage * baseAreaBenefit.BaseDamageBenefit() - this.Defense * baseAreaBenefit.BaseDefenseBenefit(); //Équation qui enlève le damage par la défense 
+        if (!iPowerOn)
+        {
+            if (dmgType == "Melee")
+            {
+                dmgReceived = damageOrigin.GetComponent<Equipment>().DamageMelee(damageOrigin.GetComponent<Enemy>().MyMelee) * damageOrigin.GetComponent<Enemy>().GetEnemyBaseAreaBenefit().BaseDamageBenefit() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
+            }
+            else if (dmgType == "Range")
+            {
+                dmgReceived = damageOrigin.GetComponent<Equipment>().DamageRange(damageOrigin.GetComponent<Enemy>().MyRange) * damageOrigin.GetComponent<Enemy>().GetEnemyBaseAreaBenefit().BaseDamageBenefit() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
+            }
 
-        if (dmgType == "Melee")
-        {
-            dmgReceived = damageOrigin.GetComponent<Equipment>().DamageMelee(damageOrigin.GetComponent<Enemy>().MyMelee) * damageOrigin.GetComponent<Enemy>().GetEnemyBaseAreaBenefit().BaseDamageBenefit() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
-        } 
-        else if (dmgType == "Range") 
-        {
-            dmgReceived = damageOrigin.GetComponent<Equipment>().DamageRange(damageOrigin.GetComponent<Enemy>().MyRange) * damageOrigin.GetComponent<Enemy>().GetEnemyBaseAreaBenefit().BaseDamageBenefit() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
+            this.Hp -= dmgReceived; //Soustrait le Hp par le dmgReceived.
         }
-        
-        this.Hp -= dmgReceived; //Soustrait le Hp par le dmgReceived.
 
         if (this.Hp <= 0f) //Condition If pour si le Hp est inférieur ou égal à 0
         {
@@ -60,26 +64,26 @@ public class Player : Characters
 
     public void SetColorHealthBar() //Méthode pour changer la couleur de la barre de vie selon la valeur. n
     {
-        if(this.Hp >= 0.6 * this.HpMax) //Condition If pour si la vie du joueur est supérieure ou égale à 60% de sa vie maximum.
+        if (this.Hp >= 0.6 * this.HpMax) //Condition If pour si la vie du joueur est supérieure ou égale à 60% de sa vie maximum.
         {
             fillHealthBar.color = Color.green; //Changer la couleur du fillHealthBar par Vert
-        } 
+        }
         else if (this.Hp >= 0.3 * this.HpMax && this.Hp < 0.6 * this.HpMax) //Condition If pour si la vie du joueur est supérieure ou égale à 30% et inférieur à 60% de sa vie maximum.
         {
             fillHealthBar.color = Color.yellow; //Changer la couleur du fillHealthBar par Jaune
-        } 
+        }
         else if (this.Hp >= 0 * this.HpMax && this.Hp < 0.3 * this.HpMax) //Condition If pour si la vie du joueur est supérieure ou égale à 0% et inférieur à 30% de sa vie maximum.
         {
             fillHealthBar.color = Color.red; //Changer la couleur du fillHealthBar par Rouge
-        } 
+        }
     }
 
     public void SetTextHealthBar() //Méthode pour changer la valeur affiché de la barre de vie.
     {
-        if(this.Hp >= 100) //Condition If pour si la valeur de Hp est supérieure ou égale à 100.
+        if (this.Hp >= 100) //Condition If pour si la valeur de Hp est supérieure ou égale à 100.
         {
             txtHealthBar.text = Convert.ToInt32(this.Hp).ToString("D3"); //Afficher la valeur de Hp à 3 chiffres
-        } 
+        }
         else if (this.Hp < 100) //Condition If pour si la valeur de Hp est inférieure à 100.
         {
             txtHealthBar.text = Convert.ToInt32(this.Hp).ToString("D2"); //Afficher la valeur de Hp à 2 chiffres
@@ -88,6 +92,21 @@ public class Player : Characters
         {
             txtHealthBar.text = Convert.ToInt32(this.Hp * 0).ToString("D1"); //Afficher 0
         }
+    }
+
+    public void IsInvincibilityOn(bool on)
+    {
+        iPowerOn = on;
+    }
+
+    public void SetDoubleDamageOn(float mul)
+    {
+        dmgPowerOn = mul;
+    }
+
+    public float SendDoubleDamageOn()
+    {
+        return dmgPowerOn;
     }
 
     public BaseArea GetPlayerBaseAreaBenefit()
