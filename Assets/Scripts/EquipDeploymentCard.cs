@@ -15,11 +15,9 @@ public class EquipDeploymentCard : MonoBehaviour
     [SerializeField] private Text textDeployment = null;
 
     [SerializeField] private int numEquip = 0;
-    private int numWave = 0;
-    private float timerWave = 0f;
-    private bool onceEquip = false;
-    private bool onceWave1 = false;
-    private bool onceWave2 = false;
+    [SerializeField] private int numWave = 0;
+    private float timerEquip = 0f;
+    private bool isTriggered = false;
 
     // Start is called before the first frame update
     void Start()
@@ -29,7 +27,7 @@ public class EquipDeploymentCard : MonoBehaviour
 
     public void PrepareEquipmentCard()
     {
-        onceEquip = true;
+        numEquip = 0;
         switch (numWave)
         {
             case 0:
@@ -45,6 +43,7 @@ public class EquipDeploymentCard : MonoBehaviour
                 numEquip = UnityEngine.Random.Range(0, 9);
                 break;
         }
+        numWave++;
     }
 
     public void DisplayEquipmentCard()
@@ -82,82 +81,82 @@ public class EquipDeploymentCard : MonoBehaviour
             default:
                 textDeployment.text = "Empty Card";
                 break;
-
         }
     }
 
-    public void AttachEquipmentPlayer(Collision collision)
+    public void AttachEquipmentPlayer()
     {
         switch (numEquip)
         {
             case 0:
-                collision.gameObject.GetComponent<Player>().MyRange = Equipment.typeRange.Slinger;
+                player.GetComponent<Player>().MyRange = Equipment.typeRange.Slinger;
                 break;
             case 1:
-                collision.gameObject.GetComponent<Player>().MyArmor = Equipment.typeArmor.Light;
+                player.GetComponent<Player>().MyArmor = Equipment.typeArmor.Light;
                 break;
             case 2:
-                collision.gameObject.GetComponent<Player>().MyRange = Equipment.typeRange.Bow;
+                player.GetComponent<Player>().MyRange = Equipment.typeRange.Bow;
                 break;
             case 3:
-                collision.gameObject.GetComponent<Player>().MyArmor = Equipment.typeArmor.Medium;
+                player.GetComponent<Player>().MyArmor = Equipment.typeArmor.Medium;
                 break;
             case 4:
-                collision.gameObject.GetComponent<Player>().MyMelee = Equipment.typeMelee.Sword;
+                player.GetComponent<Player>().MyMelee = Equipment.typeMelee.Sword;
                 break;
             case 5:
-                collision.gameObject.GetComponent<Player>().MyMelee = Equipment.typeMelee.Spear;
+                player.GetComponent<Player>().MyMelee = Equipment.typeMelee.Spear;
                 break;
             case 6:
-                collision.gameObject.GetComponent<Player>().MyMelee = Equipment.typeMelee.Hammer;
+                player.GetComponent<Player>().MyMelee = Equipment.typeMelee.Hammer;
                 break;
             case 7:
-                collision.gameObject.GetComponent<Player>().MyRange = Equipment.typeRange.Gun;
+                player.GetComponent<Player>().MyRange = Equipment.typeRange.Gun;
                 break;
             case 8:
-                collision.gameObject.GetComponent<Player>().MyArmor = Equipment.typeArmor.Heavy;
+                player.GetComponent<Player>().MyArmor = Equipment.typeArmor.Heavy;
                 break;
             default:
                 break;
         }
-
+        player.GetComponent<Player>().SetImgEquipment();
+        player.GetComponent<Player>().SetPlayerEquipment();
         SetInactiveEquipmentCard();
     }
-    public void AttachEquipmentEnemy(Collision collision)
+    public void AttachEquipmentEnemy(Collider other)
     {
         switch (numEquip)
         {
             case 0:
-                collision.gameObject.GetComponent<Enemy>().MyRange = Equipment.typeRange.Slinger;
+                other.gameObject.GetComponent<Enemy>().MyRange = Equipment.typeRange.Slinger;
                 break;
             case 1:
-                collision.gameObject.GetComponent<Enemy>().MyArmor = Equipment.typeArmor.Light;
+                other.gameObject.GetComponent<Enemy>().MyArmor = Equipment.typeArmor.Light;
                 break;
             case 2:
-                collision.gameObject.GetComponent<Enemy>().MyRange = Equipment.typeRange.Bow;
+                other.gameObject.GetComponent<Enemy>().MyRange = Equipment.typeRange.Bow;
                 break;
             case 3:
-                collision.gameObject.GetComponent<Enemy>().MyArmor = Equipment.typeArmor.Medium;
+                other.gameObject.GetComponent<Enemy>().MyArmor = Equipment.typeArmor.Medium;
                 break;
             case 4:
-                collision.gameObject.GetComponent<Enemy>().MyMelee = Equipment.typeMelee.Sword;
+                other.gameObject.GetComponent<Enemy>().MyMelee = Equipment.typeMelee.Sword;
                 break;
             case 5:
-                collision.gameObject.GetComponent<Enemy>().MyMelee = Equipment.typeMelee.Spear;
+                other.gameObject.GetComponent<Enemy>().MyMelee = Equipment.typeMelee.Spear;
                 break;
             case 6:
-                collision.gameObject.GetComponent<Enemy>().MyMelee = Equipment.typeMelee.Hammer;
+                other.gameObject.GetComponent<Enemy>().MyMelee = Equipment.typeMelee.Hammer;
                 break;
             case 7:
-                collision.gameObject.GetComponent<Enemy>().MyRange = Equipment.typeRange.Gun;
+                other.gameObject.GetComponent<Enemy>().MyRange = Equipment.typeRange.Gun;
                 break;
             case 8:
-                collision.gameObject.GetComponent<Enemy>().MyArmor = Equipment.typeArmor.Heavy;
+                other.gameObject.GetComponent<Enemy>().MyArmor = Equipment.typeArmor.Heavy;
                 break;
             default:
                 break;
         }
-
+        other.gameObject.GetComponent<Enemy>().SetEnemyEquipment();
         SetInactiveEquipmentCard();
     }
 
@@ -165,33 +164,26 @@ public class EquipDeploymentCard : MonoBehaviour
     {
         panelDeployment.SetActive(false);
         gameObject.SetActive(false);
-        onceEquip = false;
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.tag == "Character")
-        {
-            if (collision.gameObject == player)
-            {
-                Debug.Log("Collision On");
-                AttachEquipmentPlayer(collision);
-            }
-            else
-            {
-                AttachEquipmentEnemy(collision);
-            }
-
-            SetInactiveEquipmentCard();
-        }
+        isTriggered = false;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Character" && other.gameObject == player)
+        if (other.tag == "Character")
         {
-            Debug.Log("Trigger On");
-            DisplayEquipmentCard();
+            if (other.gameObject == player)
+            {
+                DisplayEquipmentCard();
+                isTriggered = true;
+            } 
+            else
+            {
+                timerEquip += Time.deltaTime;
+                if (timerEquip >= 2f)
+                {
+                    AttachEquipmentEnemy(other);
+                }
+            }
         }
     }
 
@@ -199,28 +191,24 @@ public class EquipDeploymentCard : MonoBehaviour
     {
         if (other.tag == "Character" && other.gameObject == player)
         {
-            panelDeployment.SetActive(false);
+            if (other.gameObject == player)
+            {
+                isTriggered = false;
+                panelDeployment.SetActive(false);
+            }
+            else
+            {
+                timerEquip = 0;
+            }
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        timerWave += Time.deltaTime;
-
-        if (timerWave >= 60f && !onceWave1)
+        if (Input.GetKeyDown(KeyCode.E) && isTriggered /*&& Input.GetButtonDown("Fire3")*/)
         {
-            onceWave1 = true;
-            numWave++;
+            AttachEquipmentPlayer();
         }
-
-        if (timerWave >= 120f && !onceWave2)
-        {
-            onceWave2 = true;
-            numWave++;
-        }
-
-        if (gameObject.activeInHierarchy && !onceEquip)
-            PrepareEquipmentCard();
     }
 }

@@ -35,54 +35,38 @@ public class PowerDeployment : MonoBehaviour
     void Update()
     {
         timer += Time.deltaTime;
-        Debug.Log("timer" + timer);
 
-            //instantiateOnce = true;
-        
-        if(timer >= 5f && timer < 10f)
+        if(timer >= 5f && timer < 20f)
         {
             if (!instantiateOnce1)
             {
                 SetRandomPosition();
                 randomPower = Random.Range(0, powerRank1.Length);
-                //if (randomPositionSpawn < spawnPositions.Length)
-                //{
-                    GameObject power1 = Instantiate(powerRank1[randomPower], spawnPositions[randomPositionSpawn].position, spawnPositions[randomPositionSpawn].rotation, spawnPositions[randomPositionSpawn]);
-                //    randomPositionSpawn--;
-                //    if (randomPositionSpawn < spawnPositions.Length)
-                //    {
-                //        GameObject power11 = Instantiate(powerRank1[randomPower], spawnPositions[randomPositionSpawn].position, spawnPositions[randomPositionSpawn].rotation, spawnPositions[randomPositionSpawn]);
-                //    }
-                //}
-                //else
-                //{
+                GameObject power1 = Instantiate(powerRank1[randomPower], spawnPositions[randomPositionSpawn].position, spawnPositions[randomPositionSpawn].rotation, spawnPositions[randomPositionSpawn]);
                 instantiateOnce1 = true;
 
-                //}
 
             }
         } 
         
-        else if(timer >= 10f && timer < 15f)
+        else if(timer >= 20f && timer < 50f)
         {
             if (!instantiateOnce2)
             {
                 SetRandomPosition();
                 randomPower = Random.Range(0, powerRank2.Length);
                 GameObject power2 = Instantiate(powerRank2[randomPower], spawnPositions[randomPositionSpawn].position, spawnPositions[randomPositionSpawn].rotation, spawnPositions[randomPositionSpawn]);
-                //randomPositionSpawn = randomPositionSpawn + 1;
                 instantiateOnce2 = true;
             }
         } 
         
-        else if(timer >= 15f && timer < 20f)
+        else if(timer >= 50f && timer < 80f)
         {
             if (!instantiateOnce3)
             {
                 SetRandomPosition();
                 randomPower = Random.Range(0, powerRank3.Length);
                 GameObject power3 = Instantiate(powerRank3[randomPower], spawnPositions[randomPositionSpawn].position, spawnPositions[randomPositionSpawn].rotation, spawnPositions[randomPositionSpawn]);
-                //randomPositionSpawn = randomPositionSpawn + 1;
                 instantiateOnce3 = true;
             }
         }

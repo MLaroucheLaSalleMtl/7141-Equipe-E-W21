@@ -16,13 +16,16 @@ public class InstantHealingTrigger : MonoBehaviour
     {
         if (collision.gameObject.tag == "Character")
         {
-            manager.pInstantHealing++;
-            Debug.Log("Invincibility acquired");
-            Destroy(gameObject);
-        }
-        else if (collision.gameObject.name != "CapMan")
-        {
-            collision.gameObject.GetComponent<Enemy>().eInstantHealing++;
+            if (collision.gameObject.name == "CapMan")
+            {
+                manager.pInstantHealing++; ;
+                Debug.Log("Instant Healing acquired");
+                Destroy(gameObject);
+            }
+            else if (collision.gameObject.name != "CapMan")
+            {
+                collision.gameObject.GetComponent<Enemy>().eInstantHealing++;
+            }
         }
     }
 }

@@ -14,11 +14,13 @@ public class Shoot : MonoBehaviour
     [SerializeField] private GameObject projectileGun = null;
 
     [SerializeField] private GameObject projectile; // mon projectile
-    //[SerializeField] private float firePower = 80f; //ma puissance de feu
     private bool isFiring = false; //est-ce que je tire ?
     private float timer = 0f;
 
-
+    [SerializeField] private AudioClip audioRock;
+    [SerializeField] private AudioClip audioSlinger;
+    [SerializeField] private AudioClip audioBow;
+    [SerializeField] private AudioClip audioGun;
 
     public void OnFire(InputAction.CallbackContext context)
     {
@@ -58,24 +60,28 @@ public class Shoot : MonoBehaviour
              GameObject rangedAttack = Instantiate(rangedWeapon, transform.position + (transform.forward * 3f), transform.rotation);
              rangedAttack.GetComponent<Weapon>().SetOrigin(gameObject);
              rangedAttack.GetComponent<Rigidbody>().AddForce(transform.forward * 80, ForceMode.Impulse);
+             rangedAttack.GetComponent<AudioSource>().PlayOneShot(audioRock);
         } 
         else if(rangedWeapon == projectileSlinger) 
         {
              GameObject rangedAttack = Instantiate(rangedWeapon, transform.position + (transform.forward * 3f), transform.rotation);
              rangedAttack.GetComponent<Weapon>().SetOrigin(gameObject);
              rangedAttack.GetComponent<Rigidbody>().AddForce(transform.forward * 100, ForceMode.Impulse);
+             rangedAttack.GetComponent<AudioSource>().PlayOneShot(audioSlinger);
         }
         else if(rangedWeapon == projectileBow) 
         {
              GameObject rangedAttack = Instantiate(rangedWeapon, transform.position + (transform.forward * 5f), transform.rotation);
              rangedAttack.GetComponent<Weapon>().SetOrigin(gameObject);
              rangedAttack.GetComponent<Rigidbody>().AddForce(transform.forward * 125, ForceMode.Impulse);
+             rangedAttack.GetComponent<AudioSource>().PlayOneShot(audioBow);
         }
         else if(rangedWeapon == projectileGun) 
         {
              GameObject rangedAttack = Instantiate(rangedWeapon, transform.position + (transform.forward * 3f), transform.rotation);
              rangedAttack.GetComponent<Weapon>().SetOrigin(gameObject);
              rangedAttack.GetComponent<Rigidbody>().AddForce(transform.forward * 150, ForceMode.Impulse);
+             rangedAttack.GetComponent<AudioSource>().PlayOneShot(audioGun);
         }
          
     }
@@ -90,9 +96,6 @@ public class Shoot : MonoBehaviour
         {
             if (timer > 0.5f)
             {
-                //GameObject fireBall = Instantiate(projectile, transform.position + (transform.forward * 3f), transform.rotation); //instanciation de mon projectile, son emplacement et sa direction
-                //fireBall.GetComponent<Rigidbody>().AddForce(transform.forward * firePower, ForceMode.Impulse); //rajout de la force a mon projectile(rigidbody)
-               
                 ShootRangedWeapon();
                 
                 timer = 0f;

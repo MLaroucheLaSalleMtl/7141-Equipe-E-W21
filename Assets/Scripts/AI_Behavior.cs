@@ -18,8 +18,6 @@ public class AI_Behavior : MonoBehaviour
     private int pointIndex;
 
     //Attaque de l'IA
-    [SerializeField] private GameObject projectile; //mon projectile
-    [SerializeField] private float firePower = 80f;
 
     private IState state; //Référence vers l'interface Istate
 
@@ -112,11 +110,6 @@ public class AI_Behavior : MonoBehaviour
                             }
                             else if (timer > 1f)
                             {
-                                /*
-                                GameObject fireBall = Instantiate(projectile, transform.position + (transform.forward * 3f), transform.rotation); //Fait une instanciation du projectile
-                                fireBall.GetComponent<Rigidbody>().AddForce(transform.forward * firePower, ForceMode.Impulse); //Donne une force et une direction au projectile instacié
-                                */
-
                                 SetRangedWeapon();//Testing Purpose
                                 ShootRangedWeapon();
 

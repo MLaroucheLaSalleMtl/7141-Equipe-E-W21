@@ -43,10 +43,7 @@ public class Enemy : Characters
 
     public override void ReceiveDamage()
     {
-        //dmgReceived = collision.gameObject.GetComponent<BallTimer>().BallDamage * baseAreaBenefit.BaseDamageBenefit() - this.Defense * baseAreaBenefit.BaseDefenseBenefit(); //Équation qui enlève le damage par la défense 
-
-
-        if (damageOrigin == player) 
+        if (damageOrigin == player)
         {
             if (dmgType == "Melee")
             {
@@ -57,25 +54,34 @@ public class Enemy : Characters
                 dmgReceived = damageOrigin.GetComponent<Equipment>().DamageRange(damageOrigin.GetComponent<Player>().MyRange) * damageOrigin.GetComponent<Player>().GetPlayerBaseAreaBenefit().BaseDamageBenefit() * damageOrigin.GetComponent<Player>().SendDoubleDamageOn() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
             }
         }
-        else 
+        else
         {
-            if (dmgType == "Melee")
+            if (damageOrigin != null)
             {
-                dmgReceived = damageOrigin.GetComponent<Equipment>().DamageMelee(damageOrigin.GetComponent<Enemy>().MyMelee) * damageOrigin.GetComponent<Enemy>().GetEnemyBaseAreaBenefit().BaseDamageBenefit() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
-            }
-            else if (dmgType == "Range")
-            {
-                dmgReceived = damageOrigin.GetComponent<Equipment>().DamageRange(damageOrigin.GetComponent<Enemy>().MyRange) * damageOrigin.GetComponent<Enemy>().GetEnemyBaseAreaBenefit().BaseDamageBenefit() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
+                if (dmgType == "Melee")
+                {
+                    dmgReceived = damageOrigin.GetComponent<Equipment>().DamageMelee(damageOrigin.GetComponent<Enemy>().MyMelee) * damageOrigin.GetComponent<Enemy>().GetEnemyBaseAreaBenefit().BaseDamageBenefit() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
+                }
+                else if (dmgType == "Range")
+                {
+                    dmgReceived = damageOrigin.GetComponent<Equipment>().DamageRange(damageOrigin.GetComponent<Enemy>().MyRange) * damageOrigin.GetComponent<Enemy>().GetEnemyBaseAreaBenefit().BaseDamageBenefit() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
+                }
             }
         }
 
         this.Hp -= dmgReceived; //Soustrait le Hp par le dmgReceived.
 
         if (this.Hp <= 0f) //Condition If pour si la valeur Hp est inférieure ou égale à 0
-        { 
+        {
             SetHealthBar(); //Aller à la méthode SetHealthBar() pour ajuster la barre de vie avant de mourir
             IsDead(); //Aller à la méthode IsDead() pour aller mourir
         }
+    }
+
+    public void SetEnemyEquipment()
+    {
+        gameObject.GetComponent<AI_Behavior>().SetMelee(MyMelee); //Need to call it when changing melee
+        gameObject.GetComponent<AI_Behavior>().SetRange(MyRange); //Need to call it when changing range
     }
 
     public override void IsDead() //Méthode pour si le opponent est mort
@@ -90,21 +96,20 @@ public class Enemy : Characters
 
     private void OnCollisionEnter(Collision collision) //Méthode pour si il y a une collision.
     {
-        if(collision.gameObject.tag == "Damage") //Condition If pour si le tag du gameObject de la collision est un "Damage"
+        if (gameObject != null)
         {
-            //ReceiveDamage(collision); //Aller à la méthode ReceiveDamage() avec la collision
-        }
-        if (collision.gameObject.tag == "Melee")
-        {
-            damageOrigin = collision.gameObject.GetComponent<Weapon>().GetOrigin(); 
-            dmgType = "Melee";
-            ReceiveDamage();
-        }
-        if (collision.gameObject.tag == "Range")
-        {
-            damageOrigin = collision.gameObject.GetComponent<Weapon>().GetOrigin();
-            dmgType = "Range";
-            ReceiveDamage();
+            if (collision.gameObject.tag == "Melee")
+            {
+                damageOrigin = collision.gameObject.GetComponent<Weapon>().GetOrigin();
+                dmgType = "Melee";
+                ReceiveDamage();
+            }
+            if (collision.gameObject.tag == "Range")
+            {
+                damageOrigin = collision.gameObject.GetComponent<Weapon>().GetOrigin();
+                dmgType = "Range";
+                ReceiveDamage();
+            }
         }
     }
 
@@ -112,9 +117,10 @@ public class Enemy : Characters
     void Start()
     {
         baseAreaBenefit = baseArea.GetComponent<BaseArea>(); //Cache le baseAreaBenefit
-        gameObject.GetComponent<AI_Behavior>().SetMelee(MyMelee); //Need to call it when changing melee
-        gameObject.GetComponent<AI_Behavior>().SetRange(MyRange); //Need to call it when changing range
+        SetEnemyEquipment();
         manager = GameManager.instance; //Référence au GameMnager
+        myRenderer = GetComponent<Renderer>();
+        agent = GetComponent<NavMeshAgent>();
     }
 
     public void SetHealthBar() //Méthode pour ajuster la barre de vie

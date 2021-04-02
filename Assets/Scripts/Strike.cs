@@ -18,6 +18,16 @@ public class Strike : MonoBehaviour
     private float timer = 0;
     [SerializeField] private Equipment.typeMelee myMelee;
 
+    //Audio
+    [SerializeField] private AudioSource audioSource1;
+    [SerializeField] private AudioSource audioSource2;
+    [SerializeField] private AudioSource audioSource3;
+    [SerializeField] private AudioSource audioSource4;
+    [SerializeField] private AudioClip audioKnife;
+    [SerializeField] private AudioClip audioSword;
+    [SerializeField] private AudioClip audioSpear;
+    [SerializeField] private AudioClip audioHammer;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -45,6 +55,7 @@ public class Strike : MonoBehaviour
         timer = 0.5f;
         knifeObject.SetActive(true);
         if (knifeAnim) knifeAnim.SetTrigger("Attack");
+        audioSource1.PlayOneShot(audioKnife);
         Invoke("SetInactiveKnife", timer);
     }
 
@@ -54,6 +65,7 @@ public class Strike : MonoBehaviour
         swordObject.SetActive(true);
         if (swordAnim) swordAnim.SetTrigger("Attack");
         Invoke("SetInactiveSword", timer);
+        audioSource2.PlayOneShot(audioSword);
     }
 
     public void AttackSpear()
@@ -62,6 +74,7 @@ public class Strike : MonoBehaviour
         spearObject.SetActive(true);
         if (spearAnim) spearAnim.SetTrigger("Attack");
         Invoke("SetInactiveSpear", timer);
+        audioSource3.PlayOneShot(audioSpear);
     }
 
     public void AttackHammer()
@@ -70,6 +83,7 @@ public class Strike : MonoBehaviour
         hammerObject.SetActive(true);
         if (hammerAnim) hammerAnim.SetTrigger("Attack");
         Invoke("SetInactiveHammer", timer);
+        audioSource4.PlayOneShot(audioHammer);
     }
 
     public void SetInactiveKnife()

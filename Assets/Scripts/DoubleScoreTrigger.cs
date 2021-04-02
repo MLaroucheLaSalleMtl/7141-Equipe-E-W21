@@ -12,9 +12,10 @@ public class DoubleScoreTrigger : MonoBehaviour
         manager = GameManager.instance;
     }
 
-    private void OnTriggerEnter(Collider other)
+
+    private void OnCollisionEnter(Collision collision)
     {
-        if (other.tag == "Character")
+        if (collision.gameObject.tag == "Character" && collision.gameObject.name == "CapMan")
         {
             manager.pDoubleScore++;
             Debug.Log("Double Score acquired");

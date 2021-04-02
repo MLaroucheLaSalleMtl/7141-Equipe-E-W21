@@ -16,13 +16,16 @@ public class DoubleDamageTrigger : MonoBehaviour
     {
         if (collision.gameObject.tag == "Character")
         {
-            manager.pDoubleDamage++;
-            Debug.Log("Invincibility acquired");
-            Destroy(gameObject);
-        }
-        else if (collision.gameObject.name != "CapMan")
-        {
-            collision.gameObject.GetComponent<Enemy>().eDoubleDamage++;
+            if (collision.gameObject.name == "CapMan")
+            {
+                manager.pDoubleDamage++;
+                Debug.Log("Double Damage acquired");
+                Destroy(gameObject);
+            }
+            else if (collision.gameObject.name != "CapMan")
+            {
+                collision.gameObject.GetComponent<Enemy>().eDoubleDamage++;
+            }
         }
     }
 }

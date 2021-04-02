@@ -17,13 +17,16 @@ public class InvisibilityTrigger : MonoBehaviour
     {
         if (collision.gameObject.tag == "Character")
         {
-            manager.pInvincibility++;
-            Debug.Log("Invincibility acquired");
-            Destroy(gameObject);
-        }
-        else if (collision.gameObject.name != "CapMan")
-        {
-            collision.gameObject.GetComponent<Enemy>().eInvisibility++;
+            if (collision.gameObject.name == "CapMan")
+            {
+                manager.pInvisibility++;
+                Debug.Log("Invisibility acquired");
+                Destroy(gameObject);
+            }
+            else if (collision.gameObject.name != "CapMan")
+            {
+                collision.gameObject.GetComponent<Enemy>().eInvisibility++;
+            }
         }
     }
 }

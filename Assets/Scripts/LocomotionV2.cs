@@ -6,6 +6,10 @@ using UnityEngine.InputSystem;
 
 public class LocomotionV2 : MonoBehaviour
 {
+    private GameManager manager;
+    private float timer = 0f;
+    private bool useTimer = false;
+
     public LayerMask layerMask;
 
     //Déplacmeent du joueur
@@ -14,7 +18,7 @@ public class LocomotionV2 : MonoBehaviour
     private Vector3 move; // référence au vecteur de mouvement 
     private float hAxis;
     private float vAxis;
-    //private bool isMoving = false;
+
 
     //Gravité
     [SerializeField] private float gravity = 10f;
@@ -43,13 +47,14 @@ public class LocomotionV2 : MonoBehaviour
     {
         capman = GetComponent<CharacterController>(); //Cache du character controller
         capman1 = GetComponent<NavMeshAgent>(); //cache du navmesh agent
+        manager = GameManager.instance;
     }
 
     public void OnMove(InputAction.CallbackContext context)
     {
         move = context.ReadValue<Vector2>(); //attribution des valeurs des vecteurs de mouvement de mon joueur
-        hAxis = move.x * 2;
-        vAxis = move.y * 2;
+        hAxis = move.x;
+        vAxis = move.y;
     }
 
     public void OnJump(InputAction.CallbackContext context)
@@ -71,16 +76,54 @@ public class LocomotionV2 : MonoBehaviour
         }
     }
 
+
+    private void isDoubleSpeed()
+    {
+        if(useTimer)
+        {
+            timer -= Time.deltaTime;
+        }
+
+        //Double Speed
+        if (manager.isUsingDoubleSpeed)
+        {
+            if (manager.pDoubleSpeed > 0)
+            {
+                useTimer = true;
+                timer = 10f;
+                manager.pDoubleSpeed--;
+            }
+            manager.isUsingDoubleSpeed = false;
+        }
+
+        if(timer > 0f)
+        {
+            move = new Vector3(hAxis, 0f, vAxis);
+            capman.Move(move);
+        }
+        else
+        {
+            useTimer = false;
+            timer = 0f;
+            move = new Vector3(hAxis / 2, 0f, vAxis / 2);
+            capman.Move(move);
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
 
         FaceMousePosition();
 
+        isDoubleSpeed();
+
         //Déplacement du joueur
-        move = new Vector3(hAxis / 2, 0f, vAxis / 2);
+        //move = new Vector3(hAxis / 2, 0f, vAxis / 2);
         float moveAngle = (Mathf.Atan2(move.x, move.z) * Mathf.Rad2Deg); //on calcule l'angle de muouvement et on le convertit en degré et le rendre relatif a langle de la caméra
         //float lookAngle = Mathf.LerpAngle(transform.eulerAngles.y, moveAngle, 0.25f); //Progressivement me tourner vers l'angle de déplacement
+
+
 
         if (move.magnitude >= 0.1f) //on change d'angle seulement quand on bouge
         {
@@ -118,4 +161,6 @@ public class LocomotionV2 : MonoBehaviour
         }
 
     }
+
+
 }

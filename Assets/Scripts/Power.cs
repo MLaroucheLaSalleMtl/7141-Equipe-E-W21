@@ -16,10 +16,6 @@ public class Power : MonoBehaviour
     private Player player;
     [SerializeField] private GameObject playerGO;
     [SerializeField] private GameObject ballGO;
-    private BallTimer ball;
-
-    private float playerDefense = 0;
-    private float ballDmg = 0;
 
     public List<Power> powerList;
 
@@ -40,7 +36,6 @@ public class Power : MonoBehaviour
         agentCapman = GetComponent<NavMeshAgent>();
         manager = GameManager.instance;
         powerList.Capacity = 2;
-        //playerDefense = GetComponent<Player>();
     }
 
     void Invisibility()
@@ -110,20 +105,10 @@ public class Power : MonoBehaviour
                 if (timer > 0f)
                 {
                     playerGO.GetComponent<Player>().IsInvincibilityOn(true);
-                    /*
-                    playerDefense = playerGO.GetComponent<Player>().Defense;
-                    //character.GetComponent<Characters>().Defense = ball.GetComponent<BallTimer>().BallDamage;
-                    playerGO.GetComponent<Player>().Defense = 50;
-                    //player.GetComponent<Player>().Defense = player.GetComponent<Player>().Defense * 2;
-                    */
                 }
                 else
                 {
                     playerGO.GetComponent<Player>().IsInvincibilityOn(false);
-                    
-                    //playerGO.GetComponent<Player>().Defense = playerDefense;
-                    //character.GetComponent<Characters>().Defense = character.GetComponent<Characters>().Defense;
-                    //player.GetComponent<Player>().Defense = player.GetComponent<Player>().Defense;
                     isActivePower = false;
                     isInvincible = false;
 
@@ -162,15 +147,10 @@ public class Power : MonoBehaviour
                 if (timer > 0f)
                 {
                     playerGO.GetComponent<Player>().SetDoubleDamageOn(2f);
-                    //ballDmg = ballGO.GetComponent<BallTimer>().BallDamage;
-                    //ball.GetComponent<BallTimer>().BallDamage = ball.GetComponent<BallTimer>().BallDamage * 2;
-                    //ballGO.GetComponent<BallTimer>().BallDamage = ballGO.GetComponent<BallTimer>().BallDamage * 2;
                 }
                 else
                 {
                     playerGO.GetComponent<Player>().SetDoubleDamageOn(1f);
-                    //ball.GetComponent<BallTimer>().BallDamage = ball.GetComponent<BallTimer>().BallDamage;
-                    //ballGO.GetComponent<BallTimer>().BallDamage = ballDmg;
                     isActivePower = false;
                 }
             }
@@ -192,7 +172,6 @@ public class Power : MonoBehaviour
             isActivePower = true;
             if (isActivePower)
             {
-                //character.GetComponent<Characters>().Hp = character.GetComponent<Characters>().HpMax;
                 playerGO.GetComponent<Player>().Hp = playerGO.GetComponent<Player>().HpMax;
                 isActivePower = false;
             }

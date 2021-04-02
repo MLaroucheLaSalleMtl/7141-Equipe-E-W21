@@ -16,13 +16,16 @@ public class DoubleSpeedTrigger : MonoBehaviour
     {
         if (collision.gameObject.tag == "Character")
         {
-            manager.pDoubleSpeed++;
-            Debug.Log("Invincibility acquired");
-            Destroy(gameObject);
-        }
-        else if (collision.gameObject.name != "CapMan")
-        {
-            collision.gameObject.GetComponent<Enemy>().eDoubleSpeed++;
+            if (collision.gameObject.name == "CapMan")
+            {
+                manager.pDoubleSpeed++;
+                Debug.Log("Double Speed acquired");
+                Destroy(gameObject);
+            }
+            else if (collision.gameObject.name != "CapMan")
+            {
+                collision.gameObject.GetComponent<Enemy>().eDoubleSpeed++;
+            }
         }
     }
 }

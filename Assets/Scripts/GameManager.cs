@@ -153,11 +153,20 @@ public class GameManager : MonoBehaviour
         }
     }
     
+    public void SetEquipmentCard()
+    {
+        for(int i = 0; i < arrayEquipmentCard.Length; i++)
+        {
+            arrayEquipmentCard[i].GetComponent<EquipDeploymentCard>().PrepareEquipmentCard();
+        }
+    }
+
     public void DeployEquipmentCard()
     {
-        DestroyEquipmentCard();
-
         equipCardCount = 0;
+
+        DestroyEquipmentCard();
+        SetEquipmentCard();
 
         do
         {
@@ -172,12 +181,10 @@ public class GameManager : MonoBehaviour
 
     public void DestroyEquipmentCard()
     {
-        for(int i = 0; i < arrayEquipmentCard.Length; i++)
-        {
-            if (arrayEquipmentCard[i].activeInHierarchy)
-            {
-                arrayEquipmentCard[i].SetActive(false);
-            }
+        for (int i = 0; i < arrayEquipmentCard.Length; i++)
+        {   
+            if(arrayEquipmentCard[i].activeInHierarchy)
+                arrayEquipmentCard[i].GetComponent<EquipDeploymentCard>().SetInactiveEquipmentCard();
         }
     }
 
@@ -274,13 +281,13 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        //Deploy Equipment Card at Start, 2 min and 5 min
-        if(timer >= 120f && !onceDeploy1)
+        //Deploy Equipment Card at Start, 1 min and 2 min
+        if(timer >= 30f && !onceDeploy1)
         {
             onceDeploy1 = true;
             DeployEquipmentCard();
         }
-        if(timer >= 300f && !onceDeploy2)
+        if(timer >= 60f && !onceDeploy2)
         {
             onceDeploy2 = true;
             DeployEquipmentCard();
