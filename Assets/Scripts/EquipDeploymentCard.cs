@@ -9,6 +9,8 @@ public class EquipDeploymentCard : MonoBehaviour
     //Range : Rock = 30, Slinger = 35, Bow = 40, Gun = 50
     //Armor : Cloth = 15, Light = 20, Medium = 25, Heavy = 30
 
+    private GameManager manager;
+
     [SerializeField] private GameObject player = null;
 
     [SerializeField] private GameObject panelDeployment = null;
@@ -22,7 +24,7 @@ public class EquipDeploymentCard : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        manager = GameManager.instance; //Singleton du GameManager
     }
 
     public void PrepareEquipmentCard()
@@ -206,7 +208,7 @@ public class EquipDeploymentCard : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E) && isTriggered /*&& Input.GetButtonDown("Fire3")*/)
+        if (Input.GetKeyDown(KeyCode.E) && isTriggered || manager.getEquipement /*&& Input.GetButtonDown("Fire3")*/)
         {
             AttachEquipmentPlayer();
         }

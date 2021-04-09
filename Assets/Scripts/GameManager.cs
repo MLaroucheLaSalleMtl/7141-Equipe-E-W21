@@ -16,6 +16,13 @@ public class GameManager : MonoBehaviour
     public int pDoubleScore = 0;
     public int pInstantHealing = 0;
 
+    [SerializeField] private GameObject[] powerIndicators;
+    private bool powerChangedRight = false;
+    private bool powerChangedLeft = false;
+    public bool powerIsUsed = false;
+    public bool getEquipement = false;
+    public int index = 0;
+
     //Icone Pour inventaire
     [SerializeField] private GameObject okIcon1 = null;
     [SerializeField] private GameObject okIcon2 = null;
@@ -45,6 +52,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject[] pointStart = null; //point de départ du joueur
     [SerializeField] private GameObject[] characters = new GameObject[8]; //joueurs + IA
     [SerializeField] private GameObject[] mapPoints = new GameObject[8]; //GameObject qui représente la position des personnages dans le mini-map
+    [SerializeField] private GameObject[] baseIndicators = new GameObject[8];
     [SerializeField] private Material[] materialsColour = new Material[8]; //Couleur des personnages
     [SerializeField] private Text[] charactersID = new Text[8]; //Text des noms des personnages Besoin de couleur et non material
     [SerializeField] private GameObject[] arrayEquipmentCard = new GameObject[16];
@@ -54,8 +62,11 @@ public class GameManager : MonoBehaviour
 
     private int equipCardCount = 0;
     private int equipCardRandom = 0;
-    private bool onceDeploy1 = false;
-    private bool onceDeploy2 = false;
+    private bool onceTimer1 = false;
+    private bool onceTimer2 = false;
+    private bool onceTimer3 = false;
+    private bool onceTimer4 = false;
+    private float timerPenaltyHealth = 0f;
 
     //panelpause
     [SerializeField] private GameObject pnlPauseMenu; //Menu pause
@@ -109,6 +120,9 @@ public class GameManager : MonoBehaviour
         power = GetComponent<Power>();
         SetColour(); //Aller à la méthode SetColour pour mettre le couleur au Player et Opponent
         DeployEquipmentCard();
+        BlockLocationShown();
+        //powerIndicators = new GameObject[5];
+        powerIndicators[0].SetActive(true);
     }
     public void OnInvisbility(InputAction.CallbackContext context)
     {
@@ -140,16 +154,37 @@ public class GameManager : MonoBehaviour
         isUsingInstantHealing = context.performed;
     }
 
+    public void OnPowerChangeRight(InputAction.CallbackContext context)
+    {
+        powerChangedRight = context.performed;
+    }
+    public void OnPowerChangeLeft(InputAction.CallbackContext context)
+    {
+        powerChangedLeft = context.performed;
+    }
+
+    public void OnPowerUse(InputAction.CallbackContext context)
+    {
+        powerIsUsed = context.performed;
+    }
+
+    public void OnGetEquipment(InputAction.CallbackContext context)
+    {
+        getEquipement = context.performed;
+    }
+
     public void SetColour() //Méthode pour mettre la couleur
     {
         characters[0].GetComponent<MeshRenderer>().material = materialsColour[PlayerPrefs.GetInt("Player", 0)]; //Donner le material du joueur au couleur dans PlayerPrefs de Player
         mapPoints[0].GetComponent<MeshRenderer>().material = materialsColour[PlayerPrefs.GetInt("Player", 0)]; //Donner le material de l'icône Mini-Map du joueur au couleur dans PlayerPrefs de Player
         charactersID[0].color = materialsColour[PlayerPrefs.GetInt("Player", 0)].color; //Donner la couleur du Text du joueur au couleur dans PlayerPrefs de Player
+        baseIndicators[0].GetComponent<MeshRenderer>().material = materialsColour[PlayerPrefs.GetInt("Player", 0)];
         for (int i = 1; i < characters.Length; i++) //Boucle For pour traverser le array characters à partir de 1
         {
             characters[i].GetComponent<MeshRenderer>().material = materialsColour[PlayerPrefs.GetInt("Enemy" + i, 0)]; //Donner le material de l'ennemi au couleur dans PlayerPrefs de Enemy
             mapPoints[i].GetComponent<MeshRenderer>().material = materialsColour[PlayerPrefs.GetInt("Enemy" + i, 0)]; //Donner le material de l'icône Mini-Map de l'ennemi au couleur dans PlayerPrefs de Enemy
             charactersID[i].color = materialsColour[PlayerPrefs.GetInt("Enemy" + i, 0)].color; //Donner la couleur du Text de l'enemmi au couleur dans PlayerPrefs de Enemy
+            baseIndicators[i].GetComponent<MeshRenderer>().material = materialsColour[PlayerPrefs.GetInt("Enemy" + i, 0)];
         }
     }
     
@@ -185,6 +220,43 @@ public class GameManager : MonoBehaviour
         {   
             if(arrayEquipmentCard[i].activeInHierarchy)
                 arrayEquipmentCard[i].GetComponent<EquipDeploymentCard>().SetInactiveEquipmentCard();
+        }
+    }
+
+    public void BlockLocationShown()
+    {
+        for (int i = 1; i < mapPoints.Length; i++)
+        {
+            mapPoints[i].SetActive(false);
+        }
+    }
+
+    public void PenaltyBaseLost()
+    {
+        characters[0].GetComponent<Player>().SetInactiveBasePlayer();
+        for(int i = 1; i < characters.Length; i++)
+        {
+            if(characters[i] != null)
+                characters[i].GetComponent<Enemy>().SetInactiveBaseEnemy();
+        }
+    }
+
+    public void PenaltyLocationShown()
+    {
+        for(int i = 1; i < mapPoints.Length; i++)
+        {
+            if(mapPoints[i] != null)
+                mapPoints[i].SetActive(true);
+        }
+    }
+
+    public void PenaltyHealthLost()
+    {
+        characters[0].GetComponent<Player>().Hp -= 10;
+        for (int i = 1; i < characters.Length; i++)
+        {
+            if(characters[i] != null)
+                characters[i].GetComponent<Enemy>().Hp -= 10;
         }
     }
 
@@ -251,9 +323,145 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
+    public void ChangePowerRight()
+    {
+        if (index < powerIndicators.Length)
+        {
+            index++;
+            //powerIndicators[index].SetActive(true);
+            //powerChanged = false;
+        }
+        else if (index >= powerIndicators.Length)
+        {
+            index = powerIndicators.Length;
+            //powerChanged = false;
+        }
+    }
+    
+    public void ChangePowerLeft()
+    {
+        if (index > 0)
+        {
+            index--;
+            //powerIndicators[index].SetActive(true);
+            //powerChanged = false;
+        }
+        else if (index <= 0)
+        {
+            index = 0;
+            //powerChanged = false;
+        }
+    }
+
+    public void PowerStatus()
+    {
+
+        //for (int i = 0; i < powerIndicators.Length; i++)
+        //{
+        //    if (index == i)
+        //    {
+        //        powerIndicators[i].SetActive(true);
+        //    }
+        //    else
+        //    {
+        //        powerIndicators[i].SetActive(false);
+        //    }
+        //}
+
+
+        //if (powerIndicators[0].activeInHierarchy)
+        if (index == 0)
+        {
+            powerIndicators[0].SetActive(true);
+            powerIndicators[1].SetActive(false);
+            powerIndicators[2].SetActive(false);
+            powerIndicators[3].SetActive(false);
+            powerIndicators[4].SetActive(false);
+            powerIndicators[5].SetActive(false);
+            //powerChanged = false;
+        }
+        //else if (powerIndicators[1].activeInHierarchy)
+        else if (index == 1)
+        {
+            powerIndicators[0].SetActive(false);
+            powerIndicators[1].SetActive(true);
+            powerIndicators[2].SetActive(false);
+            powerIndicators[3].SetActive(false);
+            powerIndicators[4].SetActive(false);
+            powerIndicators[5].SetActive(false);
+            //powerChanged = false;
+        }
+        //else if (powerIndicators[2].activeInHierarchy)
+        else if (index == 2)
+        {
+            powerIndicators[0].SetActive(false);
+            powerIndicators[1].SetActive(false);
+            powerIndicators[2].SetActive(true);
+            powerIndicators[3].SetActive(false);
+            powerIndicators[4].SetActive(false);
+            powerIndicators[5].SetActive(false);
+            //powerChanged = false;
+        }
+        //else if (powerIndicators[3].activeInHierarchy)
+        else if (index == 3)
+        {
+            powerIndicators[0].SetActive(false);
+            powerIndicators[1].SetActive(false);
+            powerIndicators[2].SetActive(false);
+            powerIndicators[3].SetActive(true);
+            powerIndicators[4].SetActive(false);
+            powerIndicators[5].SetActive(false);
+            //powerChanged = false;
+        }
+        //else if (powerIndicators[4].activeInHierarchy)
+        else if (index == 4)
+        {
+            powerIndicators[0].SetActive(false);
+            powerIndicators[1].SetActive(false);
+            powerIndicators[2].SetActive(false);
+            powerIndicators[3].SetActive(false);
+            powerIndicators[4].SetActive(true);
+            powerIndicators[5].SetActive(false);
+            //powerChanged = false;
+        }
+        //else if (powerIndicators[5].activeInHierarchy)
+        else if (index == 5)
+        {
+            powerIndicators[0].SetActive(false);
+            powerIndicators[1].SetActive(false);
+            powerIndicators[2].SetActive(false);
+            powerIndicators[3].SetActive(false);
+            powerIndicators[4].SetActive(false);
+            powerIndicators[5].SetActive(true);
+            //powerChanged = false;
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
+        //powerToUse[0] = pInvisibility;
+        //powerToUse[1] = pInvincibility;
+        //powerToUse[2] = pInstantHealing;
+        //powerToUse[3] = pDoubleSpeed;
+        //powerToUse[4] = pDoubleDamage;
+        //powerToUse[5] = pDoubleScore;
+        //Debug.Log(index);
+        Debug.Log(powerIsUsed);
+
+        if(powerChangedRight)
+        {
+            ChangePowerRight();
+            PowerStatus();
+            powerChangedRight = false;
+        }
+        else if(powerChangedLeft)
+        {
+            ChangePowerLeft();
+            PowerStatus();
+            powerChangedLeft = false;
+        }
+
         timer += Time.deltaTime;
         //Characters deployment on arena
         if (timer < 3f)
@@ -281,21 +489,38 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        //Deploy Equipment Card at Start, 1 min and 2 min
-        if(timer >= 30f && !onceDeploy1)
+        //Condition Timer pour le déploiement des cartes d'équipements et des pénalités.
+        if(timer >= 45f && !onceTimer1) //0:45
         {
-            onceDeploy1 = true;
+            onceTimer1 = true;
             DeployEquipmentCard();
         }
-        if(timer >= 60f && !onceDeploy2)
+        if(timer >= 90f && !onceTimer2) //1:30
         {
-            onceDeploy2 = true;
+            onceTimer2 = true;
             DeployEquipmentCard();
         }
+        if(timer >= 135f && !onceTimer3) //2:15
+        {
+            onceTimer3 = true;
+            PenaltyBaseLost();
+        }
+        if(timer >= 180f && !onceTimer4) //3:00
+        {
+            onceTimer4 = true;
+            PenaltyLocationShown();
+        }
+        if(timer >= 225f) //3:45
+            timerPenaltyHealth += Time.deltaTime;
 
+        if(timerPenaltyHealth >= 5f)
+        {
+            timerPenaltyHealth = 0f;
+            PenaltyHealthLost();
+        }
 
         //TimeScore
-        score = timer * multiplier; //mon score dnas le temps
+            score = timer * multiplier; //mon score dnas le temps
         hpScore = character.GetComponent<Characters>().Hp * multiplier; //mes points HP * bonus
         finalScore = score + hpScore; //score final
         //Debug.Log(score);

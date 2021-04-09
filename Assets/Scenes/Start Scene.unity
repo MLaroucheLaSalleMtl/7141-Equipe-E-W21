@@ -133,6 +133,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6475046664794669799, guid: dba9b960ead6eaf4597f32bde25a9a4e, type: 3}
   m_PrefabInstance: {fileID: 343678411}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &268887391 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7079481615922486865, guid: 2e33fbfec58c2d948850401bae5e0d45, type: 3}
+  m_PrefabInstance: {fileID: 372316259}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &293084967
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -158,7 +169,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1480443915980567580, guid: 850e093e7a4dc264ea7c828822722815, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: 
+      value: OnRuinsClick
       objectReference: {fileID: 0}
     - target: {fileID: 1480443915980567580, guid: 850e093e7a4dc264ea7c828822722815, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -557,6 +568,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2e33fbfec58c2d948850401bae5e0d45, type: 3}
+--- !u!1 &617680333 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1768841336780927000, guid: 4f50419451450c74f99a1ba0cbc9303e, type: 3}
+  m_PrefabInstance: {fileID: 1768841336624566200}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &617680334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 617680333}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29862c7b26d48954d924d8ebf5cfac6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioMixer: {fileID: 24100000, guid: 909eb22d02de4dd43beda481147b15bc, type: 2}
+  nameVol: VolMusic
+  slider: {fileID: 268887391}
 --- !u!1 &642706450 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7079481615792396926, guid: 2e33fbfec58c2d948850401bae5e0d45, type: 3}

@@ -14,5 +14,27 @@ public class VolumeAudio : MonoBehaviour
     {
         volume = slider.value;
         audioMixer.SetFloat(nameVol, volume); //Attribue a la valeur nameParam la valeur de la variable volume
+        PlayerPrefs.SetFloat(nameVol, volume);
+        PlayerPrefs.Save();
+    }
+
+    //void PlaySound()
+    //{
+    //    StartCoroutine("StopSound");
+    //}
+
+    //IEnumerator StopSound()
+    //{
+    //    while(slider.value < 0.1f)
+    //    {
+    //        yield return null;
+    //    }
+
+    //    yield return new WaitForSeconds(0.1f);
+    //}
+
+    void Start()
+    {
+        slider.value = PlayerPrefs.GetFloat(nameVol);
     }
 }

@@ -39,43 +39,54 @@ public class Enemy : Characters
     public bool activeInvisibility = false;
     public bool activeInvincibility = false;
     public bool activeDoubleDamage = false;
+    private bool timerON = false;
+    private bool powerON = false;
+    private bool isInvincible = false;
+
 
 
     public override void ReceiveDamage()
     {
-        if (damageOrigin == player)
+        if(!isInvincible)
         {
-            if (dmgType == "Melee")
-            {
-                dmgReceived = damageOrigin.GetComponent<Equipment>().DamageMelee(damageOrigin.GetComponent<Player>().MyMelee) * damageOrigin.GetComponent<Player>().GetPlayerBaseAreaBenefit().BaseDamageBenefit() * damageOrigin.GetComponent<Player>().SendDoubleDamageOn() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
-            }
-            else if (dmgType == "Range")
-            {
-                dmgReceived = damageOrigin.GetComponent<Equipment>().DamageRange(damageOrigin.GetComponent<Player>().MyRange) * damageOrigin.GetComponent<Player>().GetPlayerBaseAreaBenefit().BaseDamageBenefit() * damageOrigin.GetComponent<Player>().SendDoubleDamageOn() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
-            }
-        }
-        else
-        {
-            if (damageOrigin != null)
+
+            if (damageOrigin == player)
             {
                 if (dmgType == "Melee")
                 {
-                    dmgReceived = damageOrigin.GetComponent<Equipment>().DamageMelee(damageOrigin.GetComponent<Enemy>().MyMelee) * damageOrigin.GetComponent<Enemy>().GetEnemyBaseAreaBenefit().BaseDamageBenefit() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
+                    dmgReceived = damageOrigin.GetComponent<Equipment>().DamageMelee(damageOrigin.GetComponent<Player>().MyMelee) * damageOrigin.GetComponent<Player>().GetPlayerBaseAreaBenefit().BaseDamageBenefit() * damageOrigin.GetComponent<Player>().SendDoubleDamageOn() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
                 }
                 else if (dmgType == "Range")
                 {
-                    dmgReceived = damageOrigin.GetComponent<Equipment>().DamageRange(damageOrigin.GetComponent<Enemy>().MyRange) * damageOrigin.GetComponent<Enemy>().GetEnemyBaseAreaBenefit().BaseDamageBenefit() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
+                    dmgReceived = damageOrigin.GetComponent<Equipment>().DamageRange(damageOrigin.GetComponent<Player>().MyRange) * damageOrigin.GetComponent<Player>().GetPlayerBaseAreaBenefit().BaseDamageBenefit() * damageOrigin.GetComponent<Player>().SendDoubleDamageOn() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
                 }
             }
-        }
+            else
+            {
+                if (damageOrigin != null)
+                {
+                    if (dmgType == "Melee")
+                    {
+                        dmgReceived = damageOrigin.GetComponent<Equipment>().DamageMelee(damageOrigin.GetComponent<Enemy>().MyMelee) * damageOrigin.GetComponent<Enemy>().GetEnemyBaseAreaBenefit().BaseDamageBenefit() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
+                    }
+                    else if (dmgType == "Range")
+                    {
+                        dmgReceived = damageOrigin.GetComponent<Equipment>().DamageRange(damageOrigin.GetComponent<Enemy>().MyRange) * damageOrigin.GetComponent<Enemy>().GetEnemyBaseAreaBenefit().BaseDamageBenefit() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
+                    }
+                }
+            }
 
-        this.Hp -= dmgReceived; //Soustrait le Hp par le dmgReceived.
-
-        if (this.Hp <= 0f) //Condition If pour si la valeur Hp est inférieure ou égale à 0
-        {
-            SetHealthBar(); //Aller à la méthode SetHealthBar() pour ajuster la barre de vie avant de mourir
-            IsDead(); //Aller à la méthode IsDead() pour aller mourir
+            this.Hp -= dmgReceived; //Soustrait le Hp par le dmgReceived.
         }
+    }
+    public void SetInactiveBaseEnemy()
+    {
+        baseAreaBenefit.LoseBaseArea();
+    }
+
+    public bool GetBoolActiveBaseArea()
+    {
+        return baseAreaBenefit.GetBoolActiveBaseArea();
     }
 
     public void SetEnemyEquipment()
@@ -176,7 +187,6 @@ public class Enemy : Characters
     {
         if (this.eInstantHealing > 0)
         {
-            timer -= Time.deltaTime;
             this.Hp = this.HpMax;
             eInstantHealing--;
         }
@@ -194,30 +204,33 @@ public class Enemy : Characters
     {
         if (this.eDoubleSpeed > 0)
         {
-            timer -= Time.deltaTime;
+            timerON = true;
             agent.speed = 35f;
             eDoubleSpeed--;
-            if (timer <= 0f)
-            {
-                agent.speed = 25f;
-                timer = 10f;
-            }
+        }
+        if (timer <= 0f)
+        {
+            agent.speed = 25f;
+            timer = 10f;
+            timerON = false;
         }
     }
 
     private void Invincibility()
     {
+
         if (this.eInvincibility > 0)
         {
-            timer -= Time.deltaTime;
-            float enemyDefense = this.Defense;
-            this.Defense = 50f;
+            isInvincible = true;
+            timerON = true;
             eInvincibility--;
-            if (timer <= 0f)
-            {
-                this.Defense = enemyDefense;
-                timer = 10f;
-            }
+        }
+        if (timer <= 0f)
+        {
+            timer = 10f;
+            isInvincible = false;
+            activeInvincibility = false;
+            timerON = false;
         }
     }
 
@@ -225,14 +238,17 @@ public class Enemy : Characters
     {
         if (this.eInvisibility > 0)
         {
-            timer -= Time.deltaTime;
+            timerON = true;
             myRenderer.enabled = false;
             eInvisibility--;
-            if (timer <= 0f)
-            {
-                myRenderer.enabled = true;
-                timer = 10f;
-            }
+        }
+        
+        if (timer <= 0f)
+        {
+            myRenderer.enabled = true;
+            timer = 10f;
+            activeInvisibility = false;
+            timerON = false;
         }
     }
 
@@ -241,25 +257,36 @@ public class Enemy : Characters
     {
         SetHealthBar(); //Aller à la méthode SetHealthBar() pour ajuster la barre de vie du joueur.
 
+        if (this.Hp <= 0f) //Condition If pour si la valeur Hp est inférieure ou égale à 0
+        {
+            SetHealthBar(); //Aller à la méthode SetHealthBar() pour ajuster la barre de vie avant de mourir
+            SetInactiveBaseEnemy();
+            IsDead(); //Aller à la méthode IsDead() pour aller mourir
+        }
+
+        if(timerON)
+        {
+            timer -= Time.deltaTime;
+        }
+
         if (activeInvisibility)
         {
-            Invisibility();
+                Invisibility();
+        }
+            
+
+        if (activeInvincibility)
+        {
+                Invincibility();
         }
 
 
-        if (activeInvisibility)
+        if (activeDoubleDamage)
         {
-            Invincibility();
+                DoubleDamage();
         }
-
 
         DoubleSpeed();
-
-
-        if (activeInvisibility)
-        {
-            DoubleDamage();
-        }
 
         InstantHealing();
 

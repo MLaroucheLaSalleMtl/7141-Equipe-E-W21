@@ -47,12 +47,11 @@ public class Player : Characters
                 this.Hp -= dmgReceived; //Soustrait le Hp par le dmgReceived.
             }
         }
+    }
 
-        if (this.Hp <= 0f) //Condition If pour si le Hp est inférieur ou égal à 0
-        {
-            SetHealthBar(); //Aller à la méthode SetHealthBar() pour ajuster la barre de vie avant de mourir
-            IsDead(); //Aller à la méthode IsDead() pour dire que le joueur est mort
-        }
+    public void SetInactiveBasePlayer()
+    {
+        baseAreaBenefit.LoseBaseArea();
     }
 
     public void SetPlayerEquipment()
@@ -220,8 +219,15 @@ public class Player : Characters
     {
         SetHealthBar(); //Aller à la méthode SetHealthBar() pour ajuster la barre de vie du joueur.
 
+        if (this.Hp <= 0f) //Condition If pour si le Hp est inférieur ou égal à 0
+        {
+            SetHealthBar(); //Aller à la méthode SetHealthBar() pour ajuster la barre de vie avant de mourir
+            SetInactiveBasePlayer();
+            IsDead(); //Aller à la méthode IsDead() pour dire que le joueur est mort
+        }
+
         //Invisibilité
-        if (manager.isUsingInvisibility)
+        if (manager.isUsingInvisibility || (manager.powerIsUsed && manager.index == 0))
         {
             if (manager.pInvisibility > 0)
             {
@@ -234,7 +240,7 @@ public class Player : Characters
 
 
         //Invincibilité
-        if (manager.isUsingInvincibility)
+        if (manager.isUsingInvincibility || (manager.powerIsUsed && manager.index == 1))
         {
             if (manager.pInvincibility > 0)
             {
@@ -245,9 +251,20 @@ public class Player : Characters
             }
         }
 
+        //Instant Healing
+        if (manager.isUsingInstantHealing || (manager.powerIsUsed && manager.index == 2))
+        {
+            if (manager.pInstantHealing > 0)
+            {
+                power.GetComponent<Power>().isInstantHealing = true;
+                power.GetComponent<Power>().isActivePower = true;
+                manager.pInstantHealing--;
+                manager.isUsingInstantHealing = false;
+            }
+        }
 
         //Double Damage
-        if (manager.isUsingDoubleDamage)
+        if (manager.isUsingDoubleDamage || (manager.powerIsUsed && manager.index == 4))
         {
             if (manager.pDoubleDamage > 0)
             {
@@ -259,21 +276,8 @@ public class Player : Characters
         }
 
 
-        //Double Speed
-        if (manager.isUsingDoubleSpeed)
-        {
-            if (manager.pDoubleSpeed > 0)
-            {
-                power.GetComponent<Power>().isDoubleSpeed = true;
-                power.GetComponent<Power>().isActivePower = true;
-                manager.pDoubleSpeed--;
-                manager.isUsingDoubleSpeed = false;
-            }
-        }
-
-
         //Double Score
-        if (manager.isUsingDoubleScore)
+        if (manager.isUsingDoubleScore || (manager.powerIsUsed && manager.index == 5))
         {
             if (manager.pDoubleScore > 0)
             {
@@ -285,16 +289,6 @@ public class Player : Characters
         }
 
 
-        //Instant Healing
-        if (manager.isUsingInstantHealing)
-        {
-            if (manager.pInstantHealing > 0)
-            {
-                power.GetComponent<Power>().isInstantHealing = true;
-                power.GetComponent<Power>().isActivePower = true;
-                manager.pInstantHealing--;
-                manager.isUsingInstantHealing = false;
-            }
-        }
+
     }
 }

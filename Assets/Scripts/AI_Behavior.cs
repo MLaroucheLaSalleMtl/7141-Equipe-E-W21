@@ -12,6 +12,7 @@ public class AI_Behavior : MonoBehaviour
     [SerializeField] private NavMeshAgent agent; //Mon NavMeshAgent
     [SerializeField] public List<GameObject> targetList = null; //Liste des cibles
     private float timer = 0f;
+    private float timer2 = 10f;
 
     //Patrouille de l'IA
     [SerializeField] private Transform[] patrolPoints; //Liste de points de patrouille
@@ -100,9 +101,18 @@ public class AI_Behavior : MonoBehaviour
                             timer += Time.deltaTime; //active le chrono
                             
                             //Activation d'un power si disponible dans l'inventaire
-                            enemyGO.GetComponent<Enemy>().activeInvisibility = true; //Pouvoir d'invisibilité
-                            enemyGO.GetComponent<Enemy>().activeInvincibility = true; //Pouvoir d'invincibilité
-                            enemyGO.GetComponent<Enemy>().activeDoubleDamage = true; //Pouvoir Double Damage
+                            if(enemyGO.GetComponent<Enemy>().eInvisibility > 0)
+                            {
+                                enemyGO.GetComponent<Enemy>().activeInvisibility = true; //Pouvoir d'invisibilité
+                            }
+                            if (enemyGO.GetComponent<Enemy>().eInvincibility > 0)
+                            {
+                                enemyGO.GetComponent<Enemy>().activeInvincibility = true; //Pouvoir d'invincibilité
+                            }
+                            if (enemyGO.GetComponent<Enemy>().eDoubleDamage> 0)
+                            {
+                                enemyGO.GetComponent<Enemy>().activeDoubleDamage = true; //Pouvoir Double Damage
+                            }
 
                             if (distanceFromEnemy.magnitude < 20)
                             {
@@ -121,13 +131,16 @@ public class AI_Behavior : MonoBehaviour
 
                 if (enemy.Hp <= (enemy.HpMax / 2))
                 {
-                    this.state = RunState.GetState(); // L'IA passe en mode fuite
-
-                    CancelInvoke("OnPatrolling"); //Annule l'état de patrouille
-                    agent.destination = startPointPosition.position; //L'IA se dirige vers sa base
-                    if (enemy.Hp >= (enemy.HpMax * 0.75)) // si le joueur récupère 75% de ses points HP, il retourne à l'arène
+                    if (enemy.GetBoolActiveBaseArea())
                     {
-                        this.state = NormalState.GetState();
+                        this.state = RunState.GetState(); // L'IA passe en mode fuite
+
+                        CancelInvoke("OnPatrolling"); //Annule l'état de patrouille
+                        agent.destination = startPointPosition.position; //L'IA se dirige vers sa base
+                        if (enemy.Hp >= (enemy.HpMax * 0.75)) // si le joueur récupère 75% de ses points HP, il retourne à l'arène
+                        {
+                            this.state = NormalState.GetState();
+                        }
                     }
                 }
 

@@ -8,6 +8,7 @@ public class BaseArea : MonoBehaviour
     [SerializeField] private GameObject character = null; //GameObject représentant l'occupant de la base
     [SerializeField] private GameObject player = null; //GameObject représentant le joueur
     [SerializeField] private bool baseActive = true; //Bool pour désigner si la base est actif ou non
+    [SerializeField] private Material defaultMaterial = null;
 
     [SerializeField] private bool isPresentCharacter = false; //Bool pour désigner si l'occupant est présent dans la base
     private bool isPresentPlayer = false; //Bool pour désigner si le joueur est dans la base
@@ -130,6 +131,17 @@ public class BaseArea : MonoBehaviour
         }
     }
 
+    public void LoseBaseArea()
+    {
+        baseActive = false;
+        gameObject.GetComponentInChildren<MeshRenderer>().material = defaultMaterial;
+    }
+
+    public bool GetBoolActiveBaseArea()
+    {
+        return baseActive;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -164,6 +176,7 @@ public class BaseArea : MonoBehaviour
         if (baseActive && (imageFillCaptureProgress.fillAmount == 1f || floatCaptureProgress > 1f)) //Si la base est actif et que soit l'image ou le float est au-dessus de 1 (rempli)
         {
             baseActive = false; //Bool de la base est false (inactif)
+            gameObject.GetComponentInChildren<MeshRenderer>().material = defaultMaterial;
         }
     }
 }

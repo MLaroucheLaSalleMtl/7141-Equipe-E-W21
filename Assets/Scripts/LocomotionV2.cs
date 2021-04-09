@@ -19,6 +19,11 @@ public class LocomotionV2 : MonoBehaviour
     private float hAxis;
     private float vAxis;
 
+    //Look(Rotation du joueur)
+    private Vector3 look;
+    private float hLook;
+    private float vLook;
+
 
     //Gravité
     [SerializeField] private float gravity = 10f;
@@ -62,6 +67,13 @@ public class LocomotionV2 : MonoBehaviour
         jump = context.performed; //jump  =true
     }
 
+    public void OnLook(InputAction.CallbackContext context)
+    {
+        look = context.ReadValue<Vector2>(); //attribution des valeurs des vecteurs de mouvement de mon joueur
+        hLook = look.x;
+        vLook = look.y;
+    }
+
     void FaceMousePosition()
     {
         Plane playerplane = new Plane(Vector3.up, transform.position);
@@ -85,7 +97,7 @@ public class LocomotionV2 : MonoBehaviour
         }
 
         //Double Speed
-        if (manager.isUsingDoubleSpeed)
+        if (manager.isUsingDoubleSpeed || (manager.powerIsUsed && manager.index == 3))
         {
             if (manager.pDoubleSpeed > 0)
             {
@@ -118,19 +130,25 @@ public class LocomotionV2 : MonoBehaviour
 
         isDoubleSpeed();
 
-        //Déplacement du joueur
-        //move = new Vector3(hAxis / 2, 0f, vAxis / 2);
+        look = new Vector3(hLook, 0f, vLook);
+        float lookAngle = (Mathf.Atan2(look.x, look.z) * Mathf.Rad2Deg); //Progressivement me tourner vers l'angle de déplacement
+
+        if (look.magnitude > 0.9f)
+        {
+            transform.rotation = Quaternion.Euler(0, lookAngle, 0);
+        }
+
         float moveAngle = (Mathf.Atan2(move.x, move.z) * Mathf.Rad2Deg); //on calcule l'angle de muouvement et on le convertit en degré et le rendre relatif a langle de la caméra
-        //float lookAngle = Mathf.LerpAngle(transform.eulerAngles.y, moveAngle, 0.25f); //Progressivement me tourner vers l'angle de déplacement
-
-
+        //float lookingAngle = Mathf.LerpAngle(transform.eulerAngles.y, moveAngle, 0.25f); //Progressivement me tourner vers l'angle de déplacement
 
         if (move.magnitude >= 0.1f) //on change d'angle seulement quand on bouge
         {
             //transform.rotation = Quaternion.Euler(0, lookAngle, 0); //tourne le transform sur l'axe des y
             Vector3 forward = Vector3.forward * move.magnitude; //trouve le devant du joueur selon son orientation
             move = Quaternion.Euler(0f, moveAngle, 0f) * forward; //transposer la force avec le mouvement de l'angle
+            //move = Quaternion.Euler(0f, lookAngle, 0f) * forward; //transposer la force avec le mouvement de l'angle
             //isMoving = true;
+
         }
         else
         {
