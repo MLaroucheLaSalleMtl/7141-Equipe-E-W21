@@ -2,14 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Crée par : Oussama Arouch
+/// </summary>
+
+
 public class DoubleDamageTrigger : MonoBehaviour
 {
-    private GameManager manager; //en faire pour chaque pouvoir
+    private GameManager manager; //Mon GameManager
 
     // Start is called before the first frame update
     void Start()
     {
-        manager = GameManager.instance;
+        manager = GameManager.instance; //référence à mon gamemanager
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -18,13 +23,13 @@ public class DoubleDamageTrigger : MonoBehaviour
         {
             if (collision.gameObject.name == "CapMan")
             {
-                manager.pDoubleDamage++;
+                manager.pDoubleDamage++; //Incrémentation de la variable double damage pour le player
                 Debug.Log("Double Damage acquired");
-                Destroy(gameObject);
+                Destroy(gameObject); //Destruction du gameobject après collision
             }
             else if (collision.gameObject.name != "CapMan")
             {
-                collision.gameObject.GetComponent<Enemy>().eDoubleDamage++;
+                collision.gameObject.GetComponent<Enemy>().eDoubleDamage++; //Incrémentation de la variable double damage pour le opponent
             }
         }
     }

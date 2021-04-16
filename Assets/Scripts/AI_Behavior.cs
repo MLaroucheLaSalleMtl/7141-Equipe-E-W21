@@ -3,25 +3,36 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+/// <summary>
+/// Crée par : Oussama Arouch
+/// </summary>
+
 public class AI_Behavior : MonoBehaviour
 {
+    //Faire référence au gaemobject portant le script power
+    [SerializeField] private GameObject powerGO; //mon gameobject
+    private Power power; //référence au script power
+
     private Enemy enemy;
     private Enemy enemyGO;
     [SerializeField] private Transform startPointPosition; //Référence à la base du joueur
 
     [SerializeField] private NavMeshAgent agent; //Mon NavMeshAgent
     [SerializeField] public List<GameObject> targetList = null; //Liste des cibles
-    private float timer = 0f;
-    private float timer2 = 10f;
+    private float timer = 0f; //timer
+    private float timer2 = 10f; //timer pour le countdown
+    private bool timer2OFF = false; //le timer est-il actif??
 
     //Patrouille de l'IA
     [SerializeField] private Transform[] patrolPoints; //Liste de points de patrouille
-    private int pointIndex;
+    private int pointIndex; //index
 
     //Attaque de l'IA
 
     private IState state; //Référence vers l'interface Istate
 
+
+    //Variables rajoutés par Sengsamrach Vong
     private BaseArea baseArea;
     [SerializeField] private GameObject playerBase;
 
@@ -62,6 +73,8 @@ public class AI_Behavior : MonoBehaviour
         swordObject.GetComponent<Weapon>().SetOrigin(gameObject);
         spearObject.GetComponent<Weapon>().SetOrigin(gameObject);
         hammerObject.GetComponent<Weapon>().SetOrigin(gameObject);
+
+        power = powerGO.GetComponent<Power>(); //Cache du gameObject portant le script power
     }
 
     // Update is called once per frame
@@ -76,6 +89,26 @@ public class AI_Behavior : MonoBehaviour
         else
         {
             CancelInvoke("OnPatrolling"); //Annule l'état de patrouille
+        }
+
+        //Invisibility Power for player
+        if (power.isInvisible && power.isActivePower && !timer2OFF)
+        {
+            timer2 -= Time.deltaTime;
+            if (powerGO.name == "CapMan")
+            {
+                targetList.Remove(powerGO);
+            }
+            timer2OFF = true;
+        }
+
+        if (timer2OFF && !power.isInvisible)
+        {
+            timer2OFF = false;
+            if (powerGO.name == "CapMan")
+            {
+                targetList.Add(powerGO);
+            }
         }
 
         foreach (GameObject target in targetList)
@@ -114,6 +147,7 @@ public class AI_Behavior : MonoBehaviour
                                 enemyGO.GetComponent<Enemy>().activeDoubleDamage = true; //Pouvoir Double Damage
                             }
 
+                            /////Partie rajoutée par SengSamrach Vong////
                             if (distanceFromEnemy.magnitude < 20)
                             {
                                 StrikeMeleeWeapon();
@@ -125,13 +159,14 @@ public class AI_Behavior : MonoBehaviour
 
                                 timer = 0f;
                             }
+                            //////////
                         }
                     }
                 }
 
                 if (enemy.Hp <= (enemy.HpMax / 2))
                 {
-                    if (enemy.GetBoolActiveBaseArea())
+                    if (enemy.GetBoolActiveBaseArea()) //Ligne rajoutée par SengSamrach Vong
                     {
                         this.state = RunState.GetState(); // L'IA passe en mode fuite
 
@@ -144,7 +179,7 @@ public class AI_Behavior : MonoBehaviour
                     }
                 }
 
-                if (baseArea.isBeingCaptured) //Si la base de l'IA est attaquée
+                if (baseArea.isBeingCaptured) //Si la base de l'IA est attaquée   //Ligne rajoutée par SengSamrach Vong
                 {
                     this.state = DefendState.GetState(); //passage au mode défense
                     CancelInvoke("OnPatrolling"); //Annule l'état de patrouille
@@ -159,7 +194,7 @@ public class AI_Behavior : MonoBehaviour
                         }
                     }
                 }
-                else if (!baseArea.isBeingCaptured)
+                else if (!baseArea.isBeingCaptured) //Boucle rajoutée par SengSamrach Vong
                 {
                     this.state = NormalState.GetState(); //fait appel au pattern Normal State
                 }
@@ -200,18 +235,21 @@ public class AI_Behavior : MonoBehaviour
             }
         }
     }
-    public void SetMelee(Equipment.typeMelee enemyMelee)
+
+    //Tout le reste a été rajouté par SengSamrach Vong
+
+    public void SetMelee(Equipment.typeMelee enemyMelee) //Fonction rajoutée par SengSamrach Vong
     {
         myMelee = enemyMelee;
     }
 
-    public void SetRange(Equipment.typeRange enemyRange)
+    public void SetRange(Equipment.typeRange enemyRange) //Fonction rajoutée par SengSamrach Vong
     {
         myRange = enemyRange;
         SetRangedWeapon();
     }
 
-    public void SetRangedWeapon()
+    public void SetRangedWeapon() //Fonction rajoutée par SengSamrach Vong
     {
         if (myRange == Equipment.typeRange.Rock)
         {
@@ -231,7 +269,7 @@ public class AI_Behavior : MonoBehaviour
         }
     }
 
-    public void ShootRangedWeapon()
+    public void ShootRangedWeapon() //Fonction rajoutée par SengSamrach Vong
     {
         if (rangedWeapon == projectileRock)
         {
@@ -260,7 +298,7 @@ public class AI_Behavior : MonoBehaviour
 
     }
 
-    public void StrikeMeleeWeapon()
+    public void StrikeMeleeWeapon() //Fonction rajoutée par SengSamrach Vong
     {
         if (!timerMeleeOn)
         {
@@ -297,22 +335,22 @@ public class AI_Behavior : MonoBehaviour
         }
     }
 
-    public void SetInactiveKnife()
+    public void SetInactiveKnife() //Fonction rajoutée par SengSamrach Vong
     {
         knifeObject.SetActive(false);
     }
 
-    public void SetInactiveSword()
+    public void SetInactiveSword() //Fonction rajoutée par SengSamrach Vong
     {
         swordObject.SetActive(false);
     }
 
-    public void SetInactiveSpear()
+    public void SetInactiveSpear() //Fonction rajoutée par SengSamrach Vong
     {
         spearObject.SetActive(false);
     }
 
-    public void SetInactiveHammer()
+    public void SetInactiveHammer() //Fonction rajoutée par SengSamrach Vong
     {
         hammerObject.SetActive(false);
     }

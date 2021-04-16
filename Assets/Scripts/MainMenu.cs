@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Crée par : Oussama Arouch
+/// </summary>
+
+
 public class MainMenu : MonoBehaviour
 {
 
@@ -11,10 +16,13 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private GameObject pnl_HowToPlay; //menu how to play
     [SerializeField] private GameObject pnl_ChooseColor; //séléction de couleur
 
+    [SerializeField] private GameObject[] texts; //UI des bouton keyboard + gamepad + tips
+    private int index = 0;
 
     void Awake()
     {
         pnl_MainMenu.SetActive(true);
+        texts[0].SetActive(true);
     }
 
     public void OnStartGame()
@@ -40,6 +48,54 @@ public class MainMenu : MonoBehaviour
     {
         pnl_MainMenu.SetActive(false);
         pnl_HowToPlay.SetActive(true);
+    }
+
+    public void OnKeyboard() // bouton keyboard
+    {
+        index = 0;
+        for (int i = 0; i < texts.Length; i++)
+        {
+            if(i == index)
+            {
+                texts[i].SetActive(true);
+            }
+            else
+            {
+                texts[i].SetActive(false);
+            }
+        }
+    }
+
+    public void OnGamepad() // bouton gamepad
+    {
+        index = 1;
+        for (int i = 0; i < texts.Length; i++)
+        {
+            if (i == index)
+            {
+                texts[i].SetActive(true);
+            }
+            else
+            {
+                texts[i].SetActive(false);
+            }
+        }
+    }
+
+    public void OnTips() // bouton tips
+    {
+        index = 2;
+        for (int i = 0; i < texts.Length; i++)
+        {
+            if (i == index)
+            {
+                texts[i].SetActive(true);
+            }
+            else
+            {
+                texts[i].SetActive(false);
+            }
+        }
     }
 
     public void OnQuitGame()

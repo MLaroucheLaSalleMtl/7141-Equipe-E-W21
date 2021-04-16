@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Crée par : Oussama Arouch
+/// </summary>
+
 public class RunState : IState
 {
     private static RunState instance = null;

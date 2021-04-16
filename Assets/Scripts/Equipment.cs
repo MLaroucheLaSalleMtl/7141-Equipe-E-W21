@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Script créé par Sengsamrach Vong
+/// </summary>
+
 public class Equipment : MonoBehaviour
 {
     //Melee : Knife = 30, Sword = 40, Spear = 40, Hammer = 40

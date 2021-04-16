@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Crée par : Oussama Arouch
+/// </summary>
+
+
 public class ChooseArenaScreen : MonoBehaviour
 {
 
@@ -13,30 +18,18 @@ public class ChooseArenaScreen : MonoBehaviour
 
     private void Awake()
     {
-        pnlChooseArena.SetActive(true);
+        pnlChooseArena.SetActive(true); //active le panel de choix d'arène
     }
 
     public void OnForestClick()
     {
-        pnlChooseArena.SetActive(false);
+        pnlChooseArena.SetActive(false); //Désactive le panel de choix d'arène
         SceneManager.LoadScene(2); //Charge la scène indéxée
     }
 
     public void OnRuinsClick()
     {
-        pnlChooseArena.SetActive(false);
+        pnlChooseArena.SetActive(false); //Désactive le panel de choix d'arène
         SceneManager.LoadScene(3); //Charge la scène indéxée
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

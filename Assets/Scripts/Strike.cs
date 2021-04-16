@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+/// <summary>
+/// Script créé par Sengsamrach Vong, à part les codes en lien avec l'audio par Oussama Arouch
+/// </summary>
+
 public class Strike : MonoBehaviour
 {
     [SerializeField] private GameObject knifeObject;
@@ -18,6 +22,8 @@ public class Strike : MonoBehaviour
     private float timer = 0;
     [SerializeField] private Equipment.typeMelee myMelee;
 
+
+    //Variables rajoutées par Oussama Arouch
     //Audio
     [SerializeField] private AudioSource audioSource1;
     [SerializeField] private AudioSource audioSource2;
@@ -55,8 +61,8 @@ public class Strike : MonoBehaviour
         timer = 0.5f;
         knifeObject.SetActive(true);
         if (knifeAnim) knifeAnim.SetTrigger("Attack");
-        audioSource1.PlayOneShot(audioKnife);
         Invoke("SetInactiveKnife", timer);
+        audioSource1.PlayOneShot(audioKnife); //Ligne rajoutée par Oussama Arouch
     }
 
     public void AttackSword()
@@ -65,7 +71,7 @@ public class Strike : MonoBehaviour
         swordObject.SetActive(true);
         if (swordAnim) swordAnim.SetTrigger("Attack");
         Invoke("SetInactiveSword", timer);
-        audioSource2.PlayOneShot(audioSword);
+        audioSource2.PlayOneShot(audioSword); //Ligne rajoutée par Oussama Arouch
     }
 
     public void AttackSpear()
@@ -74,7 +80,7 @@ public class Strike : MonoBehaviour
         spearObject.SetActive(true);
         if (spearAnim) spearAnim.SetTrigger("Attack");
         Invoke("SetInactiveSpear", timer);
-        audioSource3.PlayOneShot(audioSpear);
+        audioSource3.PlayOneShot(audioSpear); //Ligne rajoutée par Oussama Arouch
     }
 
     public void AttackHammer()
@@ -83,7 +89,7 @@ public class Strike : MonoBehaviour
         hammerObject.SetActive(true);
         if (hammerAnim) hammerAnim.SetTrigger("Attack");
         Invoke("SetInactiveHammer", timer);
-        audioSource4.PlayOneShot(audioHammer);
+        audioSource4.PlayOneShot(audioHammer); //Ligne rajoutée par Oussama Arouch
     }
 
     public void SetInactiveKnife()

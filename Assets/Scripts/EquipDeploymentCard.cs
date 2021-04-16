@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Script créé par Sengsamrach Vong, à part un code de Oussama Arouch
+/// </summary>
+
 public class EquipDeploymentCard : MonoBehaviour
 {
     //Melee : Knife = 30, Sword = 40, Spear = 40, Hammer = 40
@@ -208,7 +212,7 @@ public class EquipDeploymentCard : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E) && isTriggered || manager.getEquipement /*&& Input.GetButtonDown("Fire3")*/)
+        if (manager.SendGetEquipment() && isTriggered) //Ligne modifiée par Oussama Arouch
         {
             AttachEquipmentPlayer();
         }

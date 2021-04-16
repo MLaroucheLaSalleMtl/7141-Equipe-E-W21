@@ -404,6 +404,17 @@
                     "action": "GetEquipment",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5bd090e2-8925-4a9d-88f8-936b15d535d8",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "GetEquipment",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },

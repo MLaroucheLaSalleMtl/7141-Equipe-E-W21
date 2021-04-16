@@ -3,14 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Crée par : Oussama Arouch
+/// </summary>
+
+
 public class InvisibilityTrigger : MonoBehaviour
 {
-    private GameManager manager; //en faire pour chaque pouvoir
+    private GameManager manager; //Mon GameManager
 
     // Start is called before the first frame update
     void Start()
     {
-        manager = GameManager.instance;
+        manager = GameManager.instance; //référence à mon gamemanager
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -19,13 +24,13 @@ public class InvisibilityTrigger : MonoBehaviour
         {
             if (collision.gameObject.name == "CapMan")
             {
-                manager.pInvisibility++;
+                manager.pInvisibility++; //Incrémentation de la variable invisibility pour le player
                 Debug.Log("Invisibility acquired");
-                Destroy(gameObject);
+                Destroy(gameObject); //Destruction du gameobject après la collision
             }
             else if (collision.gameObject.name != "CapMan")
             {
-                collision.gameObject.GetComponent<Enemy>().eInvisibility++;
+                collision.gameObject.GetComponent<Enemy>().eInvisibility++; //Incrémentation de la variable invisibility pour le opponent
             }
         }
     }

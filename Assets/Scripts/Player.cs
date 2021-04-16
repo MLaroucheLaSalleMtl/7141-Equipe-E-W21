@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Script créé par Sengsamrach Vong, à part au code en lien avec Power dans Update() par Oussama Arouch
+/// </summary>
+
 public class Player : Characters
 {
     private Power power;
@@ -37,11 +41,11 @@ public class Player : Characters
             {
                 if (dmgType == "Melee")
                 {
-                    dmgReceived = damageOrigin.GetComponent<Equipment>().DamageMelee(damageOrigin.GetComponent<Enemy>().MyMelee) * damageOrigin.GetComponent<Enemy>().GetEnemyBaseAreaBenefit().BaseDamageBenefit() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
+                    dmgReceived = damageOrigin.GetComponent<Equipment>().DamageMelee(damageOrigin.GetComponent<Enemy>().MyMelee) * damageOrigin.GetComponent<Enemy>().GetEnemyBaseAreaBenefit().BaseDamageBenefit() * damageOrigin.GetComponent<Enemy>().SendDoubleDamage() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
                 }
                 else if (dmgType == "Range")
                 {
-                    dmgReceived = damageOrigin.GetComponent<Equipment>().DamageRange(damageOrigin.GetComponent<Enemy>().MyRange) * damageOrigin.GetComponent<Enemy>().GetEnemyBaseAreaBenefit().BaseDamageBenefit() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
+                    dmgReceived = damageOrigin.GetComponent<Equipment>().DamageRange(damageOrigin.GetComponent<Enemy>().MyRange) * damageOrigin.GetComponent<Enemy>().GetEnemyBaseAreaBenefit().BaseDamageBenefit() * damageOrigin.GetComponent<Enemy>().SendDoubleDamage() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
                 }
 
                 this.Hp -= dmgReceived; //Soustrait le Hp par le dmgReceived.
@@ -226,13 +230,15 @@ public class Player : Characters
             IsDead(); //Aller à la méthode IsDead() pour dire que le joueur est mort
         }
 
+
+        //Partie rajoutée par Oussama Arouch
         //Invisibilité
-        if (manager.isUsingInvisibility || (manager.powerIsUsed && manager.index == 0))
+        if (manager.isUsingInvisibility || (manager.powerIsUsed && manager.index == 0)) //vérifie l'input
         {
-            if (manager.pInvisibility > 0)
+            if (manager.pInvisibility > 0) //vérifie l'inventaire
             {
-                power.GetComponent<Power>().isInvisible = true;
-                power.GetComponent<Power>().isActivePower = true;
+                power.GetComponent<Power>().isActivePower = true; //active le pouvoir
+                power.GetComponent<Power>().isInvisible = true; //active le pouvoir ciblé
                 manager.pInvisibility--;
                 manager.isUsingInvisibility = false;
             }
@@ -240,36 +246,36 @@ public class Player : Characters
 
 
         //Invincibilité
-        if (manager.isUsingInvincibility || (manager.powerIsUsed && manager.index == 1))
+        if (manager.isUsingInvincibility || (manager.powerIsUsed && manager.index == 1)) //vérifie l'input
         {
-            if (manager.pInvincibility > 0)
+            if (manager.pInvincibility > 0) //vérifie l'inventaire
             {
-                power.GetComponent<Power>().isInvincible = true;
-                power.GetComponent<Power>().isActivePower = true;
+                power.GetComponent<Power>().isActivePower = true; //active le pouvoir
+                power.GetComponent<Power>().isInvincible = true; //active le pouvoir ciblé
                 manager.pInvincibility--;
                 manager.isUsingInvincibility = false;
             }
         }
 
         //Instant Healing
-        if (manager.isUsingInstantHealing || (manager.powerIsUsed && manager.index == 2))
+        if (manager.isUsingInstantHealing || (manager.powerIsUsed && manager.index == 2)) //vérifie l'input
         {
-            if (manager.pInstantHealing > 0)
+            if (manager.pInstantHealing > 0) //vérifie l'inventaire
             {
-                power.GetComponent<Power>().isInstantHealing = true;
-                power.GetComponent<Power>().isActivePower = true;
+                power.GetComponent<Power>().isActivePower = true; //active le pouvoir
+                power.GetComponent<Power>().isInstantHealing = true; //active le pouvoir ciblé
                 manager.pInstantHealing--;
                 manager.isUsingInstantHealing = false;
             }
         }
 
         //Double Damage
-        if (manager.isUsingDoubleDamage || (manager.powerIsUsed && manager.index == 4))
+        if (manager.isUsingDoubleDamage || (manager.powerIsUsed && manager.index == 4)) //vérifie l'input
         {
-            if (manager.pDoubleDamage > 0)
+            if (manager.pDoubleDamage > 0) //vérifie l'inventaire
             {
-                power.GetComponent<Power>().isDoubleDamage = true;
-                power.GetComponent<Power>().isActivePower = true;
+                power.GetComponent<Power>().isActivePower = true; //active le pouvoir
+                power.GetComponent<Power>().isDoubleDamage = true; //active le pouvoir ciblé
                 manager.pDoubleDamage--;
                 manager.isUsingDoubleDamage = false;
             }
@@ -277,12 +283,11 @@ public class Player : Characters
 
 
         //Double Score
-        if (manager.isUsingDoubleScore || (manager.powerIsUsed && manager.index == 5))
+        if (manager.isUsingDoubleScore || (manager.powerIsUsed && manager.index == 5)) //vérifie l'input
         {
-            if (manager.pDoubleScore > 0)
+            if (manager.pDoubleScore > 0) //vérifie l'inventaire
             {
-                power.GetComponent<Power>().isDoubleScore = true;
-                power.GetComponent<Power>().isActivePower = true;
+                power.GetComponent<Power>().isDoubleScore = true; //active le pouvoir ciblé
                 manager.pDoubleScore--;
                 manager.isUsingDoubleScore = false;
             }

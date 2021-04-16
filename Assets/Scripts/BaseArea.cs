@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Script créé par Sengsamrach Vong
+/// </summary>
+
 public class BaseArea : MonoBehaviour
 {
     [SerializeField] private GameObject character = null; //GameObject représentant l'occupant de la base

@@ -4,13 +4,18 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
 
+/// <summary>
+/// Crée par : Oussama Arouch
+/// </summary>
+
+
 public class LocomotionV2 : MonoBehaviour
 {
-    private GameManager manager;
+    private GameManager manager; //Mon Gamemanager
     private float timer = 0f;
-    private bool useTimer = false;
+    private bool useTimer = false; //timer actif ??
 
-    public LayerMask layerMask;
+    public LayerMask layerMask; //Layer Mask
 
     //Déplacmeent du joueur
     [SerializeField] CharacterController capman; //première référence à mon joeuur
@@ -74,22 +79,22 @@ public class LocomotionV2 : MonoBehaviour
         vLook = look.y;
     }
 
-    void FaceMousePosition()
+    void FaceMousePosition() //fonction permettant d'orienter le joueur vers la position de la souris
     {
         Plane playerplane = new Plane(Vector3.up, transform.position);
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); //rayon qui récupère l'emplacement du mouse position
         float hit;
 
         if (playerplane.Raycast(ray, out hit))
         {
-            Vector3 targetPoint = ray.GetPoint(hit);
+            Vector3 targetPoint = ray.GetPoint(hit); //vecteur qui enregistre la position de l'emplacement de la souris
             Quaternion targetRot = Quaternion.LookRotation(targetPoint - transform.position);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, speed * Time.deltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, speed * Time.deltaTime); //détérmine la rotation du joueur
         }
     }
 
 
-    private void isDoubleSpeed()
+    private void isDoubleSpeed() //fonction pour activer le double speed power pour le joueur
     {
         if(useTimer)
         {
@@ -99,25 +104,25 @@ public class LocomotionV2 : MonoBehaviour
         //Double Speed
         if (manager.isUsingDoubleSpeed || (manager.powerIsUsed && manager.index == 3))
         {
-            if (manager.pDoubleSpeed > 0)
+            if (manager.pDoubleSpeed > 0) //vérifie l'inventaire
             {
-                useTimer = true;
+                useTimer = true; //timer actif
                 timer = 10f;
-                manager.pDoubleSpeed--;
+                manager.pDoubleSpeed--; //décrémente la variable dans l'inventaire
             }
-            manager.isUsingDoubleSpeed = false;
+            manager.isUsingDoubleSpeed = false; //input = false
         }
 
         if(timer > 0f)
         {
-            move = new Vector3(hAxis, 0f, vAxis);
+            move = new Vector3(hAxis/2f, 0f, vAxis/2f); //double speed
             capman.Move(move);
         }
         else
         {
             useTimer = false;
             timer = 0f;
-            move = new Vector3(hAxis / 2, 0f, vAxis / 2);
+            move = new Vector3(hAxis / 4f, 0f, vAxis / 4f); //vitesse normale du joueur
             capman.Move(move);
         }
     }
@@ -130,7 +135,7 @@ public class LocomotionV2 : MonoBehaviour
 
         isDoubleSpeed();
 
-        look = new Vector3(hLook, 0f, vLook);
+        look = new Vector3(hLook, 0f, vLook); //vecteur pour le look (assigné au right stick de la manette)
         float lookAngle = (Mathf.Atan2(look.x, look.z) * Mathf.Rad2Deg); //Progressivement me tourner vers l'angle de déplacement
 
         if (look.magnitude > 0.9f)
@@ -139,22 +144,12 @@ public class LocomotionV2 : MonoBehaviour
         }
 
         float moveAngle = (Mathf.Atan2(move.x, move.z) * Mathf.Rad2Deg); //on calcule l'angle de muouvement et on le convertit en degré et le rendre relatif a langle de la caméra
-        //float lookingAngle = Mathf.LerpAngle(transform.eulerAngles.y, moveAngle, 0.25f); //Progressivement me tourner vers l'angle de déplacement
 
         if (move.magnitude >= 0.1f) //on change d'angle seulement quand on bouge
         {
-            //transform.rotation = Quaternion.Euler(0, lookAngle, 0); //tourne le transform sur l'axe des y
             Vector3 forward = Vector3.forward * move.magnitude; //trouve le devant du joueur selon son orientation
             move = Quaternion.Euler(0f, moveAngle, 0f) * forward; //transposer la force avec le mouvement de l'angle
-            //move = Quaternion.Euler(0f, lookAngle, 0f) * forward; //transposer la force avec le mouvement de l'angle
-            //isMoving = true;
-
         }
-        else
-        {
-            //isMoving = false;
-        }
-
 
         //Saut du joueur
         if (jump)

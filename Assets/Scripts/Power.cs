@@ -3,22 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+/// <summary>
+/// Crée par : Oussama Arouch
+/// </summary>
+
 public class Power : MonoBehaviour
 {
-    public enum PowerType { Invisibility, Invincibility, DoubleSpeed, DoubleDamage, DoubleScore, InstantHealing  }
 
-    private PowerType actualPower;
-    private GameManager manager;
-    [SerializeField] private CharacterController capman;
-    [SerializeField] private NavMeshAgent agentCapman;
-    [SerializeField] private Renderer myRenderer;
-    private Characters character;
-    private Player player;
-    [SerializeField] private GameObject playerGO;
-    [SerializeField] private GameObject ballGO;
+    private GameManager manager;//mon gamemanager
 
-    public List<Power> powerList;
+    //référence à mon player ou opponent
+    [SerializeField] private CharacterController capman; //mon character controller
+    [SerializeField] private NavMeshAgent agentCapman; //mon navmesh agent
+    [SerializeField] private Renderer myRenderer; // mon renderer
+    [SerializeField] private GameObject playerGO; //mon gameobject(player)
 
+    //Référence aux powers
     public bool isActivePower = false;
     public bool isInvisible = false;
     public bool isInvincible = false;
@@ -31,47 +31,10 @@ public class Power : MonoBehaviour
 
     void Start()
     {
-        capman = GetComponent<CharacterController>();
-        myRenderer = GetComponent<Renderer>();
-        agentCapman = GetComponent<NavMeshAgent>();
-        manager = GameManager.instance;
-        powerList.Capacity = 2;
-    }
-
-    void Invisibility()
-    {
-        isInvisible = true;
-        actualPower = PowerType.Invisibility;
-    }
-
-    void Invincibility()
-    {
-        isInvincible = true;
-        actualPower = PowerType.Invincibility;
-    }
-
-    void DoubleSpeed()
-    {
-        isDoubleSpeed = true;
-        actualPower = PowerType.DoubleSpeed;
-    }
-
-    void DoubleDamage()
-    {
-        isDoubleDamage = true;
-        actualPower = PowerType.DoubleDamage;
-    }
-
-    void DoubleScore()
-    {
-        isDoubleScore = true;
-        actualPower = PowerType.DoubleScore;
-    }
-
-    void InstantHealing()
-    {
-        isInstantHealing = true;
-        actualPower = PowerType.InstantHealing;
+        capman = GetComponent<CharacterController>(); //Cache du character controller
+        myRenderer = GetComponent<Renderer>(); //cache du renderer
+        agentCapman = GetComponent<NavMeshAgent>(); //cache du navmeshagent
+        manager = GameManager.instance; //référence au gamemanager
     }
 
     void Update()
@@ -82,14 +45,14 @@ public class Power : MonoBehaviour
             isActivePower = true;
             if (isActivePower)
             {
-                timer -= Time.deltaTime;
-                myRenderer.enabled = false;
+                timer -= Time.deltaTime; //countdown
+                myRenderer.enabled = false; //renderer désactivé
                 if (timer <= 0f)
                 {
-                    myRenderer.enabled = true;
+                    myRenderer.enabled = true; //renderer réactivé
                     isActivePower = false;
                     isInvisible = false;
-                    timer = 10f;
+                    timer = 10f; //timer réinitialisé
                 }
             }
 
@@ -101,68 +64,61 @@ public class Power : MonoBehaviour
             isActivePower = true;
             if (isActivePower)
             {
-                timer -= Time.deltaTime;
+                timer -= Time.deltaTime; //countdown
                 if (timer > 0f)
                 {
-                    playerGO.GetComponent<Player>().IsInvincibilityOn(true);
+                    playerGO.GetComponent<Player>().IsInvincibilityOn(true); //le player active l'invincibilité
                 }
                 else
                 {
-                    playerGO.GetComponent<Player>().IsInvincibilityOn(false);
+                    playerGO.GetComponent<Player>().IsInvincibilityOn(false); //le player perd l'invincibilité
                     isActivePower = false;
                     isInvincible = false;
-
+                    timer = 10f; //timer réinitialisé
                 }
             }
         }
 
-        //Pouvoir DoubleSpeed
+        //Pouvoir DoubleSpeed (opoonent seulement) // pour le player voir le script LocomotionV2
         if (isDoubleSpeed)
         {
             isActivePower = true;
             if (isActivePower)
             {
-                timer -= Time.deltaTime;
+                timer -= Time.deltaTime; //countdown
                 if (timer > 0f)
                 {
-                    float newSpeed = agentCapman.speed * 1.5f;
+                    float newSpeed = agentCapman.speed * 1.5f; //vitesse doublée (opponent)
                     agentCapman.speed = newSpeed;
                 }
                 else
                 {
-                    agentCapman.speed = agentCapman.speed;
+                    agentCapman.speed = agentCapman.speed; //vitesse revenue à la normale (opponent)
                     isActivePower = false;
+                    isDoubleSpeed = false;
+                    timer = 10f; //timer réinitialisé
                 }
             }
         }
 
-        //Pouvoir DoubleDamage
+        //Pouvoir DoubleDamage //Pouvoir modifié par Sengsamrach Vong
         if (isDoubleDamage)
         {
             isActivePower = true;
             if (isActivePower)
             {
-                timer = 5.0f;
-                timer -= Time.deltaTime;
+                timer -= Time.deltaTime; //countdown
                 if (timer > 0f)
                 {
-                    playerGO.GetComponent<Player>().SetDoubleDamageOn(2f);
+                    playerGO.GetComponent<Player>().SetDoubleDamageOn(2f); //double damage activée pour le player
                 }
                 else
                 {
-                    playerGO.GetComponent<Player>().SetDoubleDamageOn(1f);
+                    playerGO.GetComponent<Player>().SetDoubleDamageOn(1f); //double damage désactivée pour le player
                     isActivePower = false;
+                    isDoubleDamage = false;
+                    timer = 10f; //timer réinitialisé
                 }
-            }
-        }
-
-        //Pouvoir DoubleScore
-        if (isDoubleScore)
-        {
-            isActivePower = true;
-            if (isActivePower)
-            {
-                manager.finalScore = manager.finalScore * 2;
             }
         }
 
@@ -172,12 +128,11 @@ public class Power : MonoBehaviour
             isActivePower = true;
             if (isActivePower)
             {
-                playerGO.GetComponent<Player>().Hp = playerGO.GetComponent<Player>().HpMax;
+                playerGO.GetComponent<Player>().Hp = playerGO.GetComponent<Player>().HpMax; //Le player récupère tous ses points de vie
                 isActivePower = false;
+                isInstantHealing = false;
             }
         }
 
     }
-
-
 }

@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Script créé par Sengsamrach Vong
+/// </summary>
+
 public class Weapon : MonoBehaviour
 {
     private GameObject origin = null;

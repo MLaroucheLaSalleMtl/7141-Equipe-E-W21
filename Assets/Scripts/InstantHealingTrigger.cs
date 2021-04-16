@@ -2,15 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Crée par : Oussama Arouch
+/// </summary>
+
+
 public class InstantHealingTrigger : MonoBehaviour
 {
-    private GameManager manager; //en faire pour chaque pouvoir
+    private GameManager manager; //Mon GameManager
 
     // Start is called before the first frame update
     void Start()
     {
-        manager = GameManager.instance;
+        manager = GameManager.instance; //référence à mon gamemanager
     }
+
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -18,13 +24,13 @@ public class InstantHealingTrigger : MonoBehaviour
         {
             if (collision.gameObject.name == "CapMan")
             {
-                manager.pInstantHealing++; ;
+                manager.pInstantHealing++; //Incrémentation de la variable instant healing pour le player
                 Debug.Log("Instant Healing acquired");
-                Destroy(gameObject);
+                Destroy(gameObject); //Destruction du gameobject après la collision
             }
             else if (collision.gameObject.name != "CapMan")
             {
-                collision.gameObject.GetComponent<Enemy>().eInstantHealing++;
+                collision.gameObject.GetComponent<Enemy>().eInstantHealing++; //Incrémentation de la variable instant healing pour le opponent
             }
         }
     }

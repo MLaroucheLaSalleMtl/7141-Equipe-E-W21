@@ -5,6 +5,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.AI;
 
+/// <summary>
+/// Script créé par Sengsamrach Vong, à part les codes en lien avec Power par Oussama Arouch
+/// </summary>
+
 public class Enemy : Characters
 {
 
@@ -23,27 +27,25 @@ public class Enemy : Characters
 
     private float dmgReceived = 0; //float pour garder la valeur de damage recu.
 
+
+    //Variables rajoutées par Oussama Arouch
     private GameManager manager;
     [SerializeField] private Renderer myRenderer;
     [SerializeField] private NavMeshAgent agent;
     private float timer = 10f;
-
     //Variables d'incrémentation de pouvoirs
     public int eInvisibility = 0;
     public int eInvincibility = 0;
     public int eDoubleDamage = 0;
     public int eDoubleSpeed = 0;
     public int eInstantHealing = 0;
-    
     //Activation des pouvoirs
     public bool activeInvisibility = false;
     public bool activeInvincibility = false;
     public bool activeDoubleDamage = false;
     private bool timerON = false;
-    private bool powerON = false;
     private bool isInvincible = false;
-
-
+    private float dmgMultiplier = 1f;
 
     public override void ReceiveDamage()
     {
@@ -67,11 +69,11 @@ public class Enemy : Characters
                 {
                     if (dmgType == "Melee")
                     {
-                        dmgReceived = damageOrigin.GetComponent<Equipment>().DamageMelee(damageOrigin.GetComponent<Enemy>().MyMelee) * damageOrigin.GetComponent<Enemy>().GetEnemyBaseAreaBenefit().BaseDamageBenefit() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
+                        dmgReceived = damageOrigin.GetComponent<Equipment>().DamageMelee(damageOrigin.GetComponent<Enemy>().MyMelee) * damageOrigin.GetComponent<Enemy>().GetEnemyBaseAreaBenefit().BaseDamageBenefit() * damageOrigin.GetComponent<Enemy>().SendDoubleDamage() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
                     }
                     else if (dmgType == "Range")
                     {
-                        dmgReceived = damageOrigin.GetComponent<Equipment>().DamageRange(damageOrigin.GetComponent<Enemy>().MyRange) * damageOrigin.GetComponent<Enemy>().GetEnemyBaseAreaBenefit().BaseDamageBenefit() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
+                        dmgReceived = damageOrigin.GetComponent<Equipment>().DamageRange(damageOrigin.GetComponent<Enemy>().MyRange) * damageOrigin.GetComponent<Enemy>().GetEnemyBaseAreaBenefit().BaseDamageBenefit() * damageOrigin.GetComponent<Enemy>().SendDoubleDamage() - gameObject.GetComponent<Equipment>().DefenseArmor(MyArmor) * baseAreaBenefit.BaseDefenseBenefit();
                     }
                 }
             }
@@ -183,70 +185,83 @@ public class Enemy : Characters
         return baseAreaBenefit;
     }
 
-    private void InstantHealing()
+    public float SendDoubleDamage()
     {
-        if (this.eInstantHealing > 0)
+        return dmgMultiplier;
+    }
+
+    private void InstantHealing() //fonction rajoutée par Oussama Arouch
+    {
+        if (this.eInstantHealing > 0) //vérifie l'inventaire de l'opponent
         {
-            this.Hp = this.HpMax;
+            this.Hp = this.HpMax; //l'opponent récupère tous ses point de vie
             eInstantHealing--;
         }
     }
 
-    private void DoubleDamage()
+    private void DoubleDamage() //fonction rajoutée par Oussama Arouch et modifiée par Sengsamrach Vong
     {
-        if (this.eDoubleDamage > 0)
+        if (this.eDoubleDamage > 0) //vérifie l'inventaire de l'opponent
         {
-            //A FAIRE
+            timerON = true;
+            dmgMultiplier = 2f; //l'opponent douvble son damage
+        }
+        if(timer <= 0f)
+        {
+            timerON = false;
+            timer = 10f;
+            activeDoubleDamage = false;
+            dmgMultiplier = 1f; //l'opponent récupère son damage initial
         }
     }
 
-    private void DoubleSpeed()
+    private void DoubleSpeed() //fonction rajoutée par Oussama Arouch
     {
-        if (this.eDoubleSpeed > 0)
+        if (this.eDoubleSpeed > 0) //vérifie l'inventaire de l'opponent
         {
             timerON = true;
-            agent.speed = 35f;
+            agent.speed = 35f; //l'opponent augemnte sa vitesse
             eDoubleSpeed--;
         }
         if (timer <= 0f)
         {
-            agent.speed = 25f;
-            timer = 10f;
+            agent.speed = 25f; //l'opponent récupère sa vitesse initiale
+            timer = 10f; //timer réinitialisé
             timerON = false;
         }
     }
 
-    private void Invincibility()
+    private void Invincibility() //fonction rajoutée par Oussama Arouch
     {
 
-        if (this.eInvincibility > 0)
+        if (this.eInvincibility > 0) //vérifie l'inventaire de l'opponent
         {
-            isInvincible = true;
+            isInvincible = true; //l'opponent devient invincible
             timerON = true;
             eInvincibility--;
         }
         if (timer <= 0f)
         {
-            timer = 10f;
-            isInvincible = false;
+            timer = 10f; //timer réinitialisé
+            isInvincible = false; //l'opponent perd son invincibilité
             activeInvincibility = false;
             timerON = false;
         }
     }
 
-    private void Invisibility()
+    private void Invisibility() //fonction rajoutée par Oussama Arouch
     {
-        if (this.eInvisibility > 0)
+        if (this.eInvisibility > 0) //vérifie l'inventaire de l'opponent
         {
             timerON = true;
-            myRenderer.enabled = false;
+            myRenderer.enabled = false; //désactive le renderer de l'opponent
             eInvisibility--;
         }
         
         if (timer <= 0f)
         {
-            myRenderer.enabled = true;
-            timer = 10f;
+            myRenderer.enabled = true; //Réactive le renderer de l'opponent
+            timer = 10f; //timer réinitialisé
             activeInvisibility = false;
             timerON = false;
         }
@@ -264,24 +279,24 @@ public class Enemy : Characters
             IsDead(); //Aller à la méthode IsDead() pour aller mourir
         }
 
-        if(timerON)
+
+        //Partie rajoutée par Oussama Arouch
+        if (timerON)
         {
             timer -= Time.deltaTime;
         }
 
-        if (activeInvisibility)
+        if (activeInvisibility) //Est-ce que le pouvoir a été activé ?
         {
                 Invisibility();
         }
             
-
-        if (activeInvincibility)
+        if (activeInvincibility) //Est-ce que le pouvoir a été activé ?
         {
                 Invincibility();
         }
 
-
-        if (activeDoubleDamage)
+        if (activeDoubleDamage) //Est-ce que le pouvoir a été activé ?
         {
                 DoubleDamage();
         }

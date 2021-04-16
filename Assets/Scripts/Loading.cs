@@ -5,6 +5,11 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 
+/// <summary>
+/// Crée par : Oussama Arouch
+/// </summary>
+
+
 public class Loading : MonoBehaviour
 {
 

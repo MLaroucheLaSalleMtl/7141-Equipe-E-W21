@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Script créé par Sengsamrach Vong
+/// </summary>
+
 public class ColourOpponent : MonoBehaviour
 {
     [SerializeField] private GameObject panelArena = null; //GameObject qui représente le panel de l'arène
@@ -21,8 +25,8 @@ public class ColourOpponent : MonoBehaviour
         arrayColour[3] = 3; //Couleur Vert
         arrayColour[4] = 4; //Couleur Orange
         arrayColour[5] = 5; //Couleur Violet
-        arrayColour[6] = 6; //Couleur Bleu Pâle
-        arrayColour[7] = 7; //Couleur Vert Pâle
+        arrayColour[6] = 6; //Couleur Vert Pâle
+        arrayColour[7] = 7; //Couleur Bleu Pâle
 
         PlayerPrefs.DeleteKey("Player"); //Supprimer les data de couleur de Player
         PlayerPrefs.DeleteKey("Enemy"); //Supprimer les data de couleur de Enemy
@@ -137,7 +141,7 @@ public class ColourOpponent : MonoBehaviour
 
         ChangePanel();
     }
-    public void ColourLightBlue() //Méthode pour placer la couleur bleu pâle à l'élément 0
+    public void ColourLightGreen() //Méthode pour placer la couleur vert pâle à l'élément 0
     {
         ColourCheck();
 
@@ -150,7 +154,7 @@ public class ColourOpponent : MonoBehaviour
 
         ChangePanel();
     }
-    public void ColourLightGreen() //Méthode pour placer la couleur vert pâle à l'élément 0
+    public void ColourLightBlue() //Méthode pour placer la couleur bleu pâle à l'élément 0
     {
         ColourCheck();
 
@@ -163,6 +167,7 @@ public class ColourOpponent : MonoBehaviour
 
         ChangePanel();
     }
+    
 
     // Update is called once per frame
     void Update()

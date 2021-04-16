@@ -2,14 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Crée par : Oussama Arouch
+/// </summary>
+
+
 public class DoubleSpeedTrigger : MonoBehaviour
 {
-    private GameManager manager; //en faire pour chaque pouvoir
+    private GameManager manager; //Mon GameManager
 
     // Start is called before the first frame update
     void Start()
     {
-        manager = GameManager.instance;
+        manager = GameManager.instance; //référence à mon gamemanager
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -18,13 +23,13 @@ public class DoubleSpeedTrigger : MonoBehaviour
         {
             if (collision.gameObject.name == "CapMan")
             {
-                manager.pDoubleSpeed++;
+                manager.pDoubleSpeed++; //Incrémentation de la variable double speed pour le player
                 Debug.Log("Double Speed acquired");
-                Destroy(gameObject);
+                Destroy(gameObject); //Destruction du gameobject après la collision
             }
             else if (collision.gameObject.name != "CapMan")
             {
-                collision.gameObject.GetComponent<Enemy>().eDoubleSpeed++;
+                collision.gameObject.GetComponent<Enemy>().eDoubleSpeed++; //Incrémentation de la variable double speed pour le opponent
             }
         }
     }
